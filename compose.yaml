@@ -8,9 +8,3 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
     devices:
       - /dev/dri
-  gazebo:
-    image: gazebo
-    command:
-      - gzserver
-    profiles:
-      - dev
