@@ -1,1 +1,5 @@
-services: {}
+services:
+  dev:
+    image: osrf/ros:kilted-desktop-full
+    profiles:
+      - dev
