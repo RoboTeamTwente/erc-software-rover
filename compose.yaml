@@ -1,5 +1,5 @@
 services:
-  dev:
+  ros-desktop:
     image: osrf/ros:kilted-desktop-full
     profiles:
       - dev
