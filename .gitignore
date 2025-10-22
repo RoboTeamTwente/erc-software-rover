@@ -1,0 +1,18 @@
+# std
+.bin
+.cache
+.config
+.data
+result
+.run
+std
+
+# direnv
+.direnv
+
+# lefthook
+lefthook-local.yaml
+
+# nixago: ignore-linked-files
+/lefthook.yml
+/treefmt.toml
