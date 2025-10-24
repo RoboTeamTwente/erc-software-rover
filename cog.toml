@@ -1,3 +1,0 @@
-ignore_merge_commits = true
-branch_whitelist = ["release/*"]
-tag_prefix = "v"

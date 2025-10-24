@@ -14,8 +14,8 @@ nixpkgs.lib.mapAttrs (_: mkShell) {
     ];
     packages = [ nixpkgs.skopeo ];
     commands = [
-      { package = nixpkgs.cocogitto; }
       { package = nixpkgs.gh; }
+      { package = nixpkgs.git-cliff; }
       { package = nixpkgs.git-town; }
       { package = nixpkgs.just; }
     ];
