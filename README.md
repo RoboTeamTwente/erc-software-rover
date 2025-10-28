@@ -25,7 +25,7 @@ sudo apt install ros-kilted-desktop
 source /opt/ros/kilted/setup.bash
 
 # install dependencies
-sudo rosdep install --from-paths --ignore-src --default-yes .
+sudo rosdep install --from-paths --ignore-src --default-yes src
 
 # actually build, if your computer is low on RAM then use --executor sequential
 colcon build
