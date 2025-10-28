@@ -1,0 +1,41 @@
+# ERC, software part
+
+## Getting started
+
+After installing [WSL2 Ubuntu 24.04]() and [ROS2](),
+
+1. Install WSL2 with Ubuntu 24.04: `wsl --install -d Ubuntu-24.04`
+2. Install ROS2 in WSL:
+
+```bash
+sudo apt update && sudo apt install curl -y
+export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F\" '{print $4}')
+curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo ${UBUNTU_CODENAME:-${VERSION_CODENAME}})_all.deb"
+sudo dpkg -i /tmp/ros2-apt-source.deb
+
+sudo apt update
+
+sudo apt install ros-kilted-desktop
+```
+
+3. Build this project:
+
+```bash
+# activate ROS2
+source /opt/ros/kilted/setup.bash
+
+# install dependencies
+sudo rosdep install --from-paths --ignore-src --default-yes .
+
+# actually build, if your computer is low on RAM then use --executor sequential
+colcon build
+
+# activate the project
+source install/local_setup.bash
+```
+
+4. Launch this project:
+
+```bash
+# TODO
+```
