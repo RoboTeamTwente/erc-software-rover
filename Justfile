@@ -13,8 +13,11 @@ pre-commit:
 
 # Release a new version on Github
 release:
-    # TODO
-    exit 1
+    #!/bin/sh -eux
+    version=$(git cliff --bumped-version --with-commit 'chore(version): TODO')
+    message="chore(version): $version"
+    git cliff --bump -o CHANGELOG.md --with-commit "$message"
+    git commit CHANGELOG.md -m "$message"
 
 # Build & upload the container image
 deliver:
