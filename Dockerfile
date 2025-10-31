@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7-labs
 # needed until COPY --parents is available in stable
 
-FROM osrf/ros:rolling-desktop-full
+FROM osrf/ros:kilted-desktop-full
 WORKDIR /ws
 
 ADD https://cyberbotics.com/Cyberbotics.asc /etc/apt/keyrings/Cyberbotics.asc
