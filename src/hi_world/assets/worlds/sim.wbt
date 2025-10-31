@@ -27,6 +27,11 @@ Robot {
       rotation 1 0 0 1.5708
       children [
         HingeJoint {
+          device [
+            RotationalMotor {
+              name "left back wheel motor"
+            }
+          ]
           endPoint Solid {
             translation -0.575 0 0
             children [
@@ -48,6 +53,11 @@ Robot {
           }
         }
         HingeJoint {
+          device [
+            RotationalMotor {
+              name "left middle wheel motor"
+            }
+          ]
           endPoint Solid {
             children [
               USE WHEEL
@@ -58,6 +68,11 @@ Robot {
           }
         }
         HingeJoint {
+          device [
+            RotationalMotor {
+              name "left front wheel motor"
+            }
+          ]
           endPoint Solid {
             translation 0.575 0 0
             children [
@@ -75,6 +90,11 @@ Robot {
       rotation 1 0 0 -1.57
       children [
         HingeJoint {
+          device [
+            RotationalMotor {
+              name "right middle wheel motor"
+            }
+          ]
           endPoint Solid {
             children [
               USE WHEEL
@@ -85,6 +105,11 @@ Robot {
           }
         }
         HingeJoint {
+          device [
+            RotationalMotor {
+              name "right back wheel motor"
+            }
+          ]
           endPoint Solid {
             translation -0.575 0 0
             children [
@@ -96,6 +121,11 @@ Robot {
           }
         }
         HingeJoint {
+          device [
+            RotationalMotor {
+              name "right front wheel motor"
+            }
+          ]
           endPoint Solid {
             translation 0.575 0 0
             children [
