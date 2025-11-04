@@ -37,16 +37,14 @@ def generate_launch_description():
                     "/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock",
                     "/model/vehicle/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist",
                     "/model/vehicle/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry",
-                    "/model/vehicle/pose@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V",
-                    "/model/vehicle/pose_static@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V",
+                    "/world/demo/model/vehicle/joint_state@sensor_msgs/msg/JointState[gz.msgs.Model",
                 ],
                 parameters=[
                     {"qos_overrides./tf_static.publisher.durability": "transient_local"}
                 ],
                 remappings={
                     "/model/vehicle/cmd_vel": "/cmd_vel",
-                    "/model/vehicle/pose": "/tf",
-                    "/model/vehicle/pose_static": "/tf_static",
+                    "/world/demo/model/vehicle/joint_state": "/joint_states",
                 }.items(),
                 output="screen",
             ),
