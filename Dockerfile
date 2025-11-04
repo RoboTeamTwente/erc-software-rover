@@ -4,6 +4,8 @@
 FROM osrf/ros:kilted-desktop-full
 WORKDIR /ws
 
+RUN git config --global --add safe.directory /ws
+
 ADD https://github.com/helix-editor/helix/releases/download/25.07.1/helix_25.7.1-1_amd64.deb /tmp/helix.deb
 RUN apt-get install -y /tmp/helix.deb && rm /tmp/helix.deb
 RUN mkdir -p /root/.config/helix && ln -rs hx.toml /root/.config/helix/config.toml
