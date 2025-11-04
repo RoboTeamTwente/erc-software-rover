@@ -56,6 +56,7 @@ def generate_launch_description():
                 executable="robot_state_publisher",
                 parameters=[
                     {
+                        "frame_prefix": "vehicle/",
                         "robot_description": robot_sdf,
                         "use_sim_time": True,
                     }
