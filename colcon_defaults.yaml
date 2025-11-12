@@ -1,6 +1,5 @@
 build:
   symlink-install: true
   mixin:
-    - clang
     - compile-commands
     - ninja
