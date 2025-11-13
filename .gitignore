@@ -8,3 +8,8 @@
 
 # webots
 *.wbproj
+
+# dataset: ignore large datasets
+aruco-detection/dataset
+aruco-detection/images
+aruco-detection/calib_images
