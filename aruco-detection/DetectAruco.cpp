@@ -55,8 +55,9 @@ int main() {
                 cameraMatrix, distCoeffs,
                 rvecs, tvecs
             );
+            
 
-            aruco::drawDetectedMarkers(frameCopy, corners, ids);
+            aruco::drawDetectedMarkers(frameCopy, corners, ids, Scalar(0,0,255));
 
             // Draw axes
             for (size_t i = 0; i < ids.size(); i++) {
