@@ -2,6 +2,8 @@
 .git
 .jj
 build
+capella
 docs
 install
 log
+samples
