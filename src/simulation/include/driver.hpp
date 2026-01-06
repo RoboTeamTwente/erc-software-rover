@@ -7,24 +7,24 @@
 namespace rtt_rover_driver {
 
 class RobotDriver : public webots_ros2_driver::PluginInterface {
-  void init(webots_ros2_driver::WebotsNode *node,
-            std::unordered_map<std::string, std::string> &) override;
+    void init(webots_ros2_driver::WebotsNode *node,
+              std::unordered_map<std::string, std::string> &) override;
 
-  void step() override;
+    void step() override;
 
-private:
-  webots_ros2_driver::WebotsNode *node_;
-  double tick_ms_, sample_rate_; // constant, but initialized in init()
+  private:
+    webots_ros2_driver::WebotsNode *node_;
+    double tick_ms_, sample_rate_; // constant, but initialized in init()
 
-  WbDeviceTag gps_, cam_, imu_;
-  std::array<WbDeviceTag, 6> motors_, motor_encoders_;
-  std::array<std::array<double, 32>, 6> motor_positions_;
-  std::array<size_t, 6> motor_position_ixs_;
-  std::array<WbDeviceTag, 4> steering_, steering_encoders_;
+    WbDeviceTag gps_, cam_, imu_;
+    std::array<WbDeviceTag, 6> motors_, motor_encoders_;
+    std::array<std::array<double, 32>, 6> motor_positions_;
+    std::array<size_t, 6> motor_position_ixs_;
+    std::array<WbDeviceTag, 4> steering_, steering_encoders_;
 
-  std::shared_ptr<rclcpp::Subscription<geometry_msgs::msg::PoseStamped>>
-      goal_pose_sub_;
-  geometry_msgs::msg::Pose goal_pose_;
+    std::shared_ptr<rclcpp::Subscription<geometry_msgs::msg::PoseStamped>>
+        goal_pose_sub_;
+    geometry_msgs::msg::Pose goal_pose_;
 };
 
 } // namespace rtt_rover_driver
