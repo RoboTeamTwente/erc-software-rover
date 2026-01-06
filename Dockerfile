@@ -1,28 +1,7 @@
-# syntax=docker/dockerfile:1.7-labs
-# the line above is needed until COPY --parents is available in stable
-
 FROM osrf/ros:humble-desktop-full
 WORKDIR /ws
 
-# install Ruff
-RUN git config --global --add safe.directory /ws
-ADD https://astral.sh/ruff/install.sh /tmp/install-ruff.sh
-RUN sh /tmp/install-ruff.sh && rm /tmp/install-ruff.sh
-
-# install Helix
-ADD https://github.com/helix-editor/helix/releases/download/25.07.1/helix_25.7.1-1_amd64.deb /tmp/helix.deb
-RUN apt-get install -y /tmp/helix.deb && rm /tmp/helix.deb
-
-# add Webots apt repo
-ADD https://cyberbotics.com/Cyberbotics.asc /etc/apt/keyrings/Cyberbotics.asc
-RUN <<EOF
-chown _apt /etc/apt/keyrings/Cyberbotics.asc
-echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/Cyberbotics.asc] https://cyberbotics.com/debian binary-amd64/" > /etc/apt/sources.list.d/Cyberbotics.list
-apt-get update
-EOF
-
-# install other dev dependencies
-RUN apt-get upgrade -y clangd gdb python3-pylsp webots
+RUN apt-get update && apt-get upgrade -y
 
 # install project dependencies
 COPY --parents src/*/package.xml .
