@@ -19,7 +19,7 @@ extern "C" {
 #include <control.h>
 }
 
-constexpr double wheel_radius = 0.1;
+// constexpr double wheel_radius = 0.1;
 
 void rtt_rover_driver::RobotDriver::init(
     webots_ros2_driver::WebotsNode *node,
