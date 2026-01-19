@@ -16,7 +16,7 @@ if(BUILD_TESTING)
   ament_auto_find_test_dependencies()
   ament_lint_auto_find_test_dependencies()
 
-  find_package(Catch2 3 REQUIRED)
+  find_package(Catch2 2 REQUIRED)
 
   ament_auto_add_executable(path_planning_test DIRECTORY tests)
   target_link_libraries(path_planning_test Catch2::Catch2WithMain)
