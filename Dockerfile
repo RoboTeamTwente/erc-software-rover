@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7-labs
 # the line above is needed until COPY --parents is available in stable
 
-FROM osrf/ros:kilted-desktop-full
+FROM osrf/ros:humble-desktop-full
 WORKDIR /ws
 
 # install Ruff
