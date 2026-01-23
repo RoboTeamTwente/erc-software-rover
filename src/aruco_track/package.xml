@@ -19,7 +19,6 @@
   <depend>tf2_ros</depend>
   <depend>ament_index_cpp</depend>
 
-
   <!-- OpenCV via rosdep -->
   <depend>opencv</depend>
 
