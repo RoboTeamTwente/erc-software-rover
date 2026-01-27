@@ -19,7 +19,8 @@ if(BUILD_TESTING)
   find_package(Catch2 2 REQUIRED)
 
   ament_auto_add_executable(path_planning_test DIRECTORY tests)
-  target_link_libraries(path_planning_test Catch2::Catch2WithMain)
+  target_compile_definitions(path_planning_test PRIVATE CATCH_CONFIG_ENABLE_BENCHMARKING)
+  target_link_libraries(path_planning_test Catch2::Catch2)
 
   include(CTest)
   include(Catch)
