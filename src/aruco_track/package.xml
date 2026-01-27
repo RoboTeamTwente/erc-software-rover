@@ -20,7 +20,7 @@
   <depend>ament_index_cpp</depend>
 
   <!-- OpenCV via rosdep -->
-  <depend>opencv</depend>
+  <depend>libopencv-dev</depend>
 
   <export>
     <build_type>ament_cmake</build_type>
