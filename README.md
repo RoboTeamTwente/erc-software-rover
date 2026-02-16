@@ -31,6 +31,7 @@ sudo rosdep init
 source /opt/ros/humble/setup.bash
 
 # install dependencies
+export ROSDISTRO_INDEX_URL=https://git.jarkad.net.eu.org/jarkad/rosdistro/raw/branch/master/index-v4.yaml
 rosdep update
 rosdep install --from-paths --ignore-src --default-yes src
 
