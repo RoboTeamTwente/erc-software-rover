@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(path_planning)
+project(rtt_path_planning)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -8,7 +8,7 @@ endif()
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
-ament_auto_add_executable(path_planning DIRECTORY src)
+ament_auto_add_executable(rtt_path_planning DIRECTORY src)
 
 install(DIRECTORY assets/ DESTINATION share/${PROJECT_NAME})
 
