@@ -14,9 +14,9 @@ Every time you update the code within 'src/aruco_tf2_node.cpp' you must rebuild 
 
 ### Step 1 - Build
 
-1. Run `./src/aruco_track/assets/install_deps.sh` once
+1. Run `./src/rtt_aruco_track/assets/install_deps.sh` once
 2. `git submodule update --init --recursive`
-3. `colcon build --packages-select aruco_track`
+3. `colcon build --packages-select rtt_aruco_track`
 
 ### Step 2 - Source the terminal
 
@@ -27,7 +27,7 @@ Every time you update the code within 'src/aruco_tf2_node.cpp' you must rebuild 
 ### Step 3 - Run the ROS2 Node
 
 ```bash
-ros2 run aruco_track aruco_tf2_node
+ros2 run rtt_aruco_track aruco_tf2_node
 ```
 
 ### Step 4 - Select Video Source

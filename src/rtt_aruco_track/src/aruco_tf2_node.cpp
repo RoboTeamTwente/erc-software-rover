@@ -68,7 +68,7 @@ class ArucoTf2Node : public rclcpp::Node {
         // TODO: Implement the Charuco Camera Calibration logic again. (no need
         // for ROS2 impl, just standard C++)
         std::string calib_path =
-            ament_index_cpp::get_package_share_directory("aruco_track") +
+            ament_index_cpp::get_package_share_directory("rtt_aruco_track") +
             "/charuco_camera_params.yml";
         cv::FileStorage fs(calib_path, cv::FileStorage::READ);
         fs["camera_matrix"] >> camera_matrix_;
