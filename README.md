@@ -59,3 +59,14 @@ export MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA
 # launch the simulation
 ros2 launch simulation simulation.launch.py
 ```
+
+## Creating .deb packages
+
+``` bash
+# Enter the package's directory
+cd src/some_package
+# Generate Debian metadata
+bloom-generate rosdebian
+# Build the .deb
+dpkg-buildpackage -b -us -uc
+```
