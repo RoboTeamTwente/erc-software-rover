@@ -9,3 +9,11 @@ log/
 # webots
 *.wbproj
 src/*/assets/worlds/*.jpg
+
+# deb packages
+*.ddeb
+*.deb
+*.changes
+*.buildinfo
+.obj-*/
+debian/
