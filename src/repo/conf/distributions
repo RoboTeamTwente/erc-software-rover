@@ -1,0 +1,4 @@
+Codename: jammy
+Architectures: amd64 aarch64 source
+Components: main
+Contents:
