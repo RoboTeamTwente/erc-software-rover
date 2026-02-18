@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(path_planning_interfaces)
+project(rtt_path_planning_interfaces)
 
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
