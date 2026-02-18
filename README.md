@@ -19,6 +19,9 @@ sudo apt install ros-humble-desktop
 # install colcon mixins
 colcon mixin add default https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml
 colcon mixin update default
+
+# initialize rosdep
+sudo rosdep init
 ```
 
 3. Build this project:
@@ -29,7 +32,7 @@ source /opt/ros/humble/setup.bash
 
 # install dependencies
 rosdep update
-rosdep install --rosdistro humble --from-paths --ignore-src --default-yes src
+rosdep install --from-paths --ignore-src --default-yes src
 
 # actually build, if your computer is low on RAM then use --executor sequential
 colcon build
