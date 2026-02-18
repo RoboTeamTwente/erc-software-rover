@@ -9,6 +9,9 @@
 #include <thread>
 #include <vector>
 
+#include <std_msgs/msg/string.hpp>
+
+
 // define a node that listens on a UDP port and forwards received packets to two other UDP ports
 class UdpForwarderNode : public rclcpp::Node {
 public:
@@ -39,6 +42,8 @@ public:
 
     RCLCPP_INFO(get_logger(), "Listening on UDP :%d, forwarding to %s:%d and %s:%d",
                 listen_port_, dst_ip_.c_str(), dst_a_port_, dst_ip_.c_str(), dst_b_port_);
+
+    publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
   }
 
   ~UdpForwarderNode() override {
@@ -48,6 +53,7 @@ public:
   }
 
 private:
+  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
   static sockaddr_in make_dst(const std::string& ip, int port) {
     sockaddr_in dst{};
     dst.sin_family = AF_INET;
@@ -79,6 +85,15 @@ private:
                reinterpret_cast<sockaddr*>(&dstB_), sizeof(dstB_));
 
       // later: parse protobuf, publish ROS topics, etc.
+
+      // Publish to ROS
+      auto message = std_msgs::msg::String();
+      std::string payload(reinterpret_cast<char*>(buffer.data()),
+                    reinterpret_cast<char*>(buffer.data()) + n);
+        message.data = "Received: " + payload;
+
+      RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
+      publisher_->publish(message);
     }
   }
 
