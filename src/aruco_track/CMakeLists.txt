@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(aruco_track)
+project(rtt_aruco_track)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
