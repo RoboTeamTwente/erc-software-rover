@@ -8,8 +8,21 @@
 #include <atomic>
 #include <thread>
 #include <vector>
+#include <cstdint>
+#include <stdexcept>
 
-#include <std_msgs/msg/string.hpp>
+// ROS message
+#include "comms/msg/imu_sensor_information.hpp"
+
+// Protobuf generated headers (from the generated include dir)
+#include "components/sensorboard/imu_sensor.pb.h"
+#include "components/common/sensor.pb.h"
+
+static uint8_t clamp_u8(int v) {
+  if (v < 0) return 0;
+  if (v > 255) return 255;
+  return static_cast<uint8_t>(v);
+}
 
 
 // define a node that listens on a UDP port and forwards received packets to two other UDP ports
@@ -37,13 +50,14 @@ public:
     dstA_ = make_dst(dst_ip_, dst_a_port_);
     dstB_ = make_dst(dst_ip_, dst_b_port_);
 
+    // Publisher for custom message
+    imu_pub_ = this -> create_publisher<comms::msg::ImuSensorInformation>("imu_data", 10);
+
     // start receiver thread
     rx_thread_ = std::thread([this] { this->rx_loop(); });
 
     RCLCPP_INFO(get_logger(), "Listening on UDP :%d, forwarding to %s:%d and %s:%d",
                 listen_port_, dst_ip_.c_str(), dst_a_port_, dst_ip_.c_str(), dst_b_port_);
-
-    publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
   }
 
   ~UdpForwarderNode() override {
@@ -53,7 +67,7 @@ public:
   }
 
 private:
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
+  rclcpp::Publisher<comms::msg::ImuSensorInformation>::SharedPtr imu_pub_;
   static sockaddr_in make_dst(const std::string& ip, int port) {
     sockaddr_in dst{};
     dst.sin_family = AF_INET;
@@ -84,16 +98,38 @@ private:
       ::sendto(sock_, buffer.data(), n, 0,
                reinterpret_cast<sockaddr*>(&dstB_), sizeof(dstB_));
 
-      // later: parse protobuf, publish ROS topics, etc.
+      // Parse protobuf message
+      IMUSensorInformation imu_pb;
+      if (!imu_pb.ParseFromArray(buffer.data(), static_cast<int>(n))) {
+        RCLCPP_WARN_THROTTLE(
+          this->get_logger(), *this->get_clock(), 2000,
+          "Failed to parse IMU protobuf (%zd bytes)", n);
+        continue;
+      }
+
+      // Convert protobuf to ROS message
+      comms::msg::ImuSensorInformation imu_ros;
+      imu_ros.accel_x = imu_pb.accel_x();
+      imu_ros.accel_y = imu_pb.accel_y();
+      imu_ros.accel_z = imu_pb.accel_z();
+
+      imu_ros.gyro_x = imu_pb.gyro_x();
+      imu_ros.gyro_y = imu_pb.gyro_y();
+      imu_ros.gyro_z = imu_pb.gyro_z();
+
+      imu_ros.mag_x = imu_pb.mag_x();
+      imu_ros.mag_y = imu_pb.mag_y();
+      imu_ros.mag_z = imu_pb.mag_z();
+
+      imu_ros.is_calibrated = imu_pb.is_calibrated();
+      
+      // enums: protobuf enums are ints underneath
+      imu_ros.state.state = clamp_u8(static_cast<int>(imu_pb.state()));
+      imu_ros.error_code = clamp_u8(static_cast<int>(imu_pb.error_code()));
+
 
       // Publish to ROS
-      auto message = std_msgs::msg::String();
-      std::string payload(reinterpret_cast<char*>(buffer.data()),
-                    reinterpret_cast<char*>(buffer.data()) + n);
-        message.data = "Received: " + payload;
-
-      RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
-      publisher_->publish(message);
+      imu_pub_->publish(imu_ros);
     }
   }
 

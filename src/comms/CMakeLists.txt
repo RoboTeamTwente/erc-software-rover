@@ -10,6 +10,17 @@ endif()
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
+# Generate ROS 2 interfaces from msg/
+find_package(rosidl_default_generators REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/SensorState.msg"
+  "msg/ImuSensorInformation.msg"
+)
+
+ament_export_dependencies(rosidl_default_runtime)
+
+
 # --- Protobuf ---
 find_package(Protobuf REQUIRED)
 
@@ -64,6 +75,7 @@ add_custom_command(
   VERBATIM
 )
 
+
 # Compile generated .pb.cc into an object library
 add_library(erc_proto_objects OBJECT
   ${ERC_PROTO_SRCS}
@@ -76,16 +88,38 @@ target_include_directories(erc_proto_objects PUBLIC
 target_link_libraries(erc_proto_objects PUBLIC
   protobuf::libprotobuf
 )
-
 # --- Your ROS node executable ---
 ament_auto_add_executable(comms_node
   src/udp_forwarder_node.cpp
 )
+ament_auto_add_executable(udp_client
+  assets/udp_client.cpp
+)
+
+# Make sure it can see generated .pb.h files
+target_include_directories(udp_client PRIVATE
+  ${PROTO_BINARY_DIR}   # this is build/comms/generated
+)
+
+# Ensure protos are generated and compiled before building client
+target_link_libraries(udp_client
+  erc_proto_objects
+  protobuf::libprotobuf
+)
+
+install(TARGETS udp_client
+  DESTINATION lib/${PROJECT_NAME}
+)
+# ROS message
+rosidl_get_typesupport_target(cpp_typesupport_target
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
 
 # Link generated protos into the node (plain signature)
 target_link_libraries(comms_node
   erc_proto_objects
   protobuf::libprotobuf
+  ${cpp_typesupport_target}
 )
 
 # target_include_directories(comms_node PRIVATE
