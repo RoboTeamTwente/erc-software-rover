@@ -1,0 +1,6 @@
+udp_forwarder:
+  ros__parameters:
+    listen_port: 5000
+    dst_ip: "127.0.0.1"
+    dst_a_port: 6000
+    dst_b_port: 6001
