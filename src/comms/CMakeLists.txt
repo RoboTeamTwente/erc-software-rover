@@ -65,10 +65,10 @@ endforeach()
 
 add_custom_command(
   OUTPUT ${ERC_PROTO_SRCS} ${ERC_PROTO_HDRS}
+  COMMAND ${CMAKE_COMMAND} -E make_directory "${PROTO_BINARY_DIR}"
   COMMAND ${Protobuf_PROTOC_EXECUTABLE}
-  ARGS
-    --cpp_out="${PROTO_BINARY_DIR}"
-    -I "${erc_protobufs_SOURCE_DIR}"
+    --cpp_out=${PROTO_BINARY_DIR}
+    -I ${erc_protobufs_SOURCE_DIR}
     ${ERC_PROTO_FILES}
   DEPENDS ${ERC_PROTO_FILES}
   COMMENT "Generating C++ protobuf sources"
