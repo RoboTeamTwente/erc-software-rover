@@ -19,6 +19,7 @@
 #include "components/common/envelope.pb.h"
 #include "comms/udp/handler.hpp"
 #include "comms/udp/handlers/imu_handler.hpp"
+#include "comms/udp/handlers/gps_handler.hpp"
 
 class UdpForwarderNode : public rclcpp::Node {
 public:
@@ -46,6 +47,9 @@ public:
     handlers_.emplace(
       static_cast<int>(PBEnvelope::kImuInfo),
       std::make_unique<ImuHandler>(this, "imu_data", 10));
+    handlers_.emplace(
+      static_cast<int>(PBEnvelope::kGpsInfo),
+      std::make_unique<GpsHandler>(this, "gps_data", 10));
 
     rx_thread_ = std::thread([this] { this->rx_loop(); });
 
