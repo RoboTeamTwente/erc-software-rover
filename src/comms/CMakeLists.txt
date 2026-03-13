@@ -19,6 +19,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/SensorState.msg"
   "msg/ImuSensorInformation.msg"
   "msg/SensorBoardGPSInfo.msg"
+  "msg/SensorBoardPHInfo.msg"
+
 )
 
 ament_export_dependencies(rosidl_default_runtime)
@@ -96,11 +98,13 @@ ament_auto_add_executable(comms_node
   src/udp_forwarder_node.cpp
   src/handlers/imu_handler.cpp
   src/handlers/gps_handler.cpp
+  src/handlers/ph_handler.cpp
 )
 ament_auto_add_executable(udp_client
   assets/udp_client.cpp
   assets/test_payloads/imu_payload.cpp
   assets/test_payloads/gps_payload.cpp
+  assets/test_payloads/ph_payload.cpp
 )
 
 # Make sure it can see generated .pb.h files and the test_payloads/ headers

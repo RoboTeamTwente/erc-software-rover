@@ -9,9 +9,11 @@
 
 #include "test_payloads/imu_payload.hpp"
 #include "test_payloads/gps_payload.hpp"
+#include "test_payloads/ph_payload.hpp"
 
 static PBEnvelope build_envelope(const std::string& type) {
   if (type == "gps") return make_gps_envelope();
+  if (type == "ph")  return make_ph_envelope();
   return make_imu_envelope(); // default
 }
 
