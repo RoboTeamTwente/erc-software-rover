@@ -18,10 +18,10 @@
 // Envelope + handlers
 #include "components/common/envelope.pb.h"
 #include "comms/udp/handler.hpp"
-#include "comms/udp/handlers/imu_handler.hpp"
-#include "comms/udp/handlers/gps_handler.hpp"
-#include "comms/udp/handlers/ph_handler.hpp"
-#include "comms/udp/handlers/diagnostics_handler.hpp"
+#include "comms/udp/handlers/sensor_board/imu_handler.hpp"
+#include "comms/udp/handlers/sensor_board/gps_handler.hpp"
+#include "comms/udp/handlers/sensor_board/ph_handler.hpp"
+#include "comms/udp/handlers/sensor_board/diagnostics_handler.hpp"
 
 class UdpForwarderNode : public rclcpp::Node {
 public:

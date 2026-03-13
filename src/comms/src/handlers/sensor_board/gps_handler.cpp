@@ -1,4 +1,4 @@
-#include "comms/udp/handlers/gps_handler.hpp"
+#include "comms/udp/handlers/sensor_board/gps_handler.hpp"
 #include "comms/udp/utils.hpp"
 
 #include "components/sensor_board/gps_sensor.pb.h"
