@@ -1,3 +1,6 @@
+# Claude Code
+CLAUDE.md
+
 # colcon
 build/
 install/
@@ -9,3 +12,4 @@ log/
 # webots
 *.wbproj
 src/*/assets/worlds/*.jpg
+src/comms/assets/ubuntu.code-workspace
