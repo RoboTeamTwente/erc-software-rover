@@ -1,4 +1,4 @@
-#include "comms/udp/handlers/imu_handler.hpp"
+#include "comms/udp/handlers/sensor_board/imu_handler.hpp"
 #include "comms/udp/utils.hpp"
 
 #include "components/sensor_board/imu_sensor.pb.h"

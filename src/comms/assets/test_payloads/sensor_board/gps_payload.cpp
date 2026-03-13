@@ -1,4 +1,4 @@
-#include "test_payloads/gps_payload.hpp"
+#include "test_payloads/sensor_board/gps_payload.hpp"
 
 #include "components/sensor_board/gps_sensor.pb.h"
 #include "components/sensor_board/sensor.pb.h"

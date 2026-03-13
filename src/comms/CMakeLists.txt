@@ -96,17 +96,17 @@ target_link_libraries(erc_proto_objects PUBLIC
 # --- Your ROS node executable ---
 ament_auto_add_executable(comms_node
   src/udp_forwarder_node.cpp
-  src/handlers/imu_handler.cpp
-  src/handlers/gps_handler.cpp
-  src/handlers/ph_handler.cpp
-  src/handlers/diagnostics_handler.cpp
+  src/handlers/sensor_board/imu_handler.cpp
+  src/handlers/sensor_board/gps_handler.cpp
+  src/handlers/sensor_board/ph_handler.cpp
+  src/handlers/sensor_board/diagnostics_handler.cpp
 )
 ament_auto_add_executable(udp_client
   assets/udp_client.cpp
-  assets/test_payloads/imu_payload.cpp
-  assets/test_payloads/gps_payload.cpp
-  assets/test_payloads/ph_payload.cpp
-  assets/test_payloads/diagnostics_payload.cpp
+  assets/test_payloads/sensor_board/imu_payload.cpp
+  assets/test_payloads/sensor_board/gps_payload.cpp
+  assets/test_payloads/sensor_board/ph_payload.cpp
+  assets/test_payloads/sensor_board/diagnostics_payload.cpp
 )
 
 # Make sure it can see generated .pb.h files and the test_payloads/ headers

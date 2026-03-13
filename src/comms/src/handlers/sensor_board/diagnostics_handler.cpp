@@ -1,4 +1,4 @@
-#include "comms/udp/handlers/diagnostics_handler.hpp"
+#include "comms/udp/handlers/sensor_board/diagnostics_handler.hpp"
 #include "comms/udp/utils.hpp"
 
 #include "components/sensor_board/diagnostics.pb.h"

@@ -1,4 +1,4 @@
-#include "test_payloads/diagnostics_payload.hpp"
+#include "test_payloads/sensor_board/diagnostics_payload.hpp"
 
 #include "components/sensor_board/diagnostics.pb.h"
 #include "components/sensor_board/imu_sensor.pb.h"
