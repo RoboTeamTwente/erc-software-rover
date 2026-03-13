@@ -15,8 +15,8 @@
 #include <unordered_map>
 #include <memory>
 
-// UDP framing + handlers
-#include "comms/udp/packet_header.hpp"
+// Envelope + handlers
+#include "components/common/envelope.pb.h"
 #include "comms/udp/handler.hpp"
 #include "comms/udp/handlers/imu_handler.hpp"
 
@@ -42,9 +42,10 @@ public:
     dstA_ = make_dst(dst_ip_, dst_a_port_);
     dstB_ = make_dst(dst_ip_, dst_b_port_);
 
-    // Register handlers (msg_type -> handler)
-    // You can move topic name + qos depth to params later if you want.
-    handlers_.emplace(1, std::make_unique<ImuHandler>(this, "imu_data", 10));
+    // Register handlers keyed by PBEnvelope::PayloadCase
+    handlers_.emplace(
+      static_cast<int>(PBEnvelope::kImuInfo),
+      std::make_unique<ImuHandler>(this, "imu_data", 10));
 
     rx_thread_ = std::thread([this] { this->rx_loop(); });
 
@@ -84,45 +85,36 @@ private:
         continue;
       }
 
-      // Forward whole datagram (optional legacy behavior)
+      // Forward raw datagram (downstream consumers also speak PBEnvelope)
       ::sendto(sock_, buffer.data(), n, 0,
                reinterpret_cast<sockaddr*>(&dstA_), sizeof(dstA_));
       ::sendto(sock_, buffer.data(), n, 0,
                reinterpret_cast<sockaddr*>(&dstB_), sizeof(dstB_));
 
-      // ---- Dispatch framed packets: [PacketHeader][payload] ----
-      if (static_cast<std::size_t>(n) < sizeof(PacketHeader)) {
+      // Parse the datagram as a PBEnvelope
+      PBEnvelope envelope;
+      if (!envelope.ParseFromArray(buffer.data(), static_cast<int>(n))) {
         RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000,
-                             "Dropping: packet too small (%zd bytes)", n);
+                             "Failed to parse PBEnvelope (%zd bytes)", n);
         continue;
       }
 
-      PacketHeader hdr{};
-      std::memcpy(&hdr, buffer.data(), sizeof(PacketHeader));
+      const int payload_case = static_cast<int>(envelope.payload_case());
 
-      const uint16_t msg_type    = ntohs(hdr.msg_type);
-      const uint16_t payload_len = ntohs(hdr.payload_length);
-      // seq optional, but if you want it:
-      // const uint32_t seq = ntohl(hdr.seq);
-
-      const std::size_t expected = sizeof(PacketHeader) + payload_len;
-      if (static_cast<std::size_t>(n) != expected) {
+      if (payload_case == 0) {
         RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000,
-                             "Dropping: bad length got=%zd expected=%zu (type=%u payload_len=%u)",
-                             n, expected, msg_type, payload_len);
+                             "Received PBEnvelope with no payload set");
         continue;
       }
 
-      const uint8_t* payload = buffer.data() + sizeof(PacketHeader);
-
-      auto it = handlers_.find(msg_type);
+      auto it = handlers_.find(payload_case);
       if (it == handlers_.end()) {
         RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000,
-                             "No handler for msg_type=%u (payload_len=%u)", msg_type, payload_len);
+                             "No handler for PBEnvelope payload_case=%d", payload_case);
         continue;
       }
 
-      it->second->handle(payload, payload_len);
+      it->second->handle(envelope);
     }
   }
 
@@ -134,7 +126,7 @@ private:
   std::string dst_ip_{"127.0.0.1"};
   sockaddr_in dstA_{}, dstB_{};
 
-  std::unordered_map<uint16_t, std::unique_ptr<Handler>> handlers_;
+  std::unordered_map<int, std::unique_ptr<Handler>> handlers_;
 };
 
 int main(int argc, char** argv) {

@@ -4,8 +4,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include "comms/msg/imu_sensor_information.hpp"
 
-#include "components/sensorboard/imu_sensor.pb.h"
-#include "components/common/sensor.pb.h"
+#include "components/sensor_board/imu_sensor.pb.h"
 
 class ImuHandler : public Handler {
 public:
@@ -17,14 +16,10 @@ public:
     pub_ = node_->create_publisher<comms::msg::ImuSensorInformation>(topic, queue_size);
   }
 
-  void handle(const uint8_t* payload, std::size_t len) override {
-    IMUSensorInformation imu_pb;
-    if (!imu_pb.ParseFromArray(payload, static_cast<int>(len))) {
-      RCLCPP_WARN_THROTTLE(
-        node_->get_logger(), *node_->get_clock(), 2000,
-        "IMU handler: Failed to parse protobuf message (%zu bytes)", len);
-      return;
-    }
+  void handle(const PBEnvelope& envelope) override {
+    if (!envelope.has_imu_info()) return;
+
+    const SensorBoardIMUInfo& imu_pb = envelope.imu_info();
 
     comms::msg::ImuSensorInformation imu_ros;
     imu_ros.accel_x = imu_pb.accel_x();
@@ -40,10 +35,8 @@ public:
     imu_ros.mag_z = imu_pb.mag_z();
 
     imu_ros.is_calibrated = imu_pb.is_calibrated();
-
-    // SensorState.msg ends with "uint8 state"
-    imu_ros.state.state = clamp_u8(static_cast<int>(imu_pb.state()));
-    imu_ros.error_code  = clamp_u8(static_cast<int>(imu_pb.error_code()));
+    imu_ros.state.state   = clamp_u8(static_cast<int>(imu_pb.state()));
+    imu_ros.error_code    = clamp_u8(static_cast<int>(imu_pb.error_code()));
 
     pub_->publish(imu_ros);
   }

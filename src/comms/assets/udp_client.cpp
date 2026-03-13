@@ -9,12 +9,9 @@
 #include <string>
 #include <vector>
 
-#include "comms/udp/packet_header.hpp"
-
-#include "components/sensorboard/imu_sensor.pb.h"
-#include "components/common/sensor.pb.h"
-
-static constexpr uint16_t MSG_TYPE_IMU = 1;
+#include "components/common/envelope.pb.h"
+#include "components/sensor_board/imu_sensor.pb.h"
+#include "components/sensor_board/sensor.pb.h"
 
 int main(int argc, char** argv) {
   const char* server_ip = (argc >= 2) ? argv[1] : "127.0.0.1";
@@ -45,8 +42,8 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  // ---- Construct protobuf ----
-  IMUSensorInformation imu;
+  // ---- Construct IMU protobuf ----
+  SensorBoardIMUInfo imu;
   imu.set_accel_x(0.12f);
   imu.set_accel_y(-9.81f);
   imu.set_accel_z(0.05f);
@@ -63,40 +60,25 @@ int main(int argc, char** argv) {
   imu.set_state(SENSOR_OPERATING);
   imu.set_error_code(IMU_NO_ERROR);
 
-  // Serialize protobuf
+  // ---- Wrap in PBEnvelope ----
+  PBEnvelope envelope;
+  *envelope.mutable_imu_info() = imu;
+
+  // ---- Serialize envelope ----
   std::string payload;
-  if (!imu.SerializeToString(&payload)) {
+  if (!envelope.SerializeToString(&payload)) {
     std::cerr << "SerializeToString failed\n";
     ::close(sock);
     return 1;
   }
 
-  if (payload.size() > 0xFFFF) {
-    std::cerr << "Payload too large for uint16 payload_len: " << payload.size() << "\n";
-    ::close(sock);
-    return 1;
-  }
-
-  // ---- Build header (network byte order) ----
-  static uint32_t seq_host = 0;
-  PacketHeader hdr{};
-  hdr.msg_type = htons(MSG_TYPE_IMU);
-  hdr.payload_length = htons(static_cast<uint16_t>(payload.size()));
-  hdr.seq = htonl(seq_host++);
-
-  // ---- Build datagram = header + payload ----
-  std::vector<uint8_t> datagram(sizeof(PacketHeader) + payload.size());
-  std::memcpy(datagram.data(), &hdr, sizeof(PacketHeader));
-  std::memcpy(datagram.data() + sizeof(PacketHeader), payload.data(), payload.size());
-
-  // Send framed packet
-  ssize_t sent = ::sendto(sock, datagram.data(), datagram.size(), 0,
+  // ---- Send raw envelope bytes (no custom header) ----
+  ssize_t sent = ::sendto(sock, payload.data(), payload.size(), 0,
                           reinterpret_cast<const sockaddr*>(&dst), sizeof(dst));
   if (sent < 0) { perror("sendto"); ::close(sock); return 1; }
 
-  std::cout << "Sent " << sent << " bytes (hdr " << sizeof(PacketHeader)
-            << " + payload " << payload.size() << ") to "
-            << server_ip << ":5000 (src port " << local_port << ")\n";
+  std::cout << "Sent " << sent << " bytes (PBEnvelope/imu_info) to "
+            << server_ip << ":5000\n";
 
   ::close(sock);
   return 0;

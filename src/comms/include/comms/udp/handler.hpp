@@ -1,9 +1,9 @@
 #pragma once
-#include <cstdint>
-#include <cstddef>
+
+#include "components/common/envelope.pb.h"
 
 class Handler {
 public:
   virtual ~Handler() = default;
-  virtual void handle(const uint8_t* data, std::size_t length) = 0;
+  virtual void handle(const PBEnvelope& envelope) = 0;
 };
