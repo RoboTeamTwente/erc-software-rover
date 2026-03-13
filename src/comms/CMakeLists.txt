@@ -6,6 +6,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # --- ROS / ament ---
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
@@ -16,6 +18,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/SensorState.msg"
   "msg/ImuSensorInformation.msg"
+  "msg/SensorBoardGPSInfo.msg"
 )
 
 ament_export_dependencies(rosidl_default_runtime)
@@ -91,14 +94,19 @@ target_link_libraries(erc_proto_objects PUBLIC
 # --- Your ROS node executable ---
 ament_auto_add_executable(comms_node
   src/udp_forwarder_node.cpp
+  src/handlers/imu_handler.cpp
+  src/handlers/gps_handler.cpp
 )
 ament_auto_add_executable(udp_client
   assets/udp_client.cpp
+  assets/test_payloads/imu_payload.cpp
+  assets/test_payloads/gps_payload.cpp
 )
 
-# Make sure it can see generated .pb.h files
+# Make sure it can see generated .pb.h files and the test_payloads/ headers
 target_include_directories(udp_client PRIVATE
-  ${PROTO_BINARY_DIR}   # this is build/comms/generated
+  ${PROTO_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/assets
 )
 
 # Ensure protos are generated and compiled before building client

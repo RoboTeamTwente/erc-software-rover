@@ -4,18 +4,21 @@
 #include <unistd.h>
 
 #include <cstdint>
-#include <cstring>
 #include <iostream>
 #include <string>
-#include <vector>
 
-#include "components/common/envelope.pb.h"
-#include "components/sensor_board/imu_sensor.pb.h"
-#include "components/sensor_board/sensor.pb.h"
+#include "test_payloads/imu_payload.hpp"
+#include "test_payloads/gps_payload.hpp"
+
+static PBEnvelope build_envelope(const std::string& type) {
+  if (type == "gps") return make_gps_envelope();
+  return make_imu_envelope(); // default
+}
 
 int main(int argc, char** argv) {
-  const char* server_ip = (argc >= 2) ? argv[1] : "127.0.0.1";
-  int local_port        = (argc >= 3) ? std::stoi(argv[2]) : 0;
+  const char* server_ip      = (argc >= 2) ? argv[1] : "127.0.0.1";
+  int         local_port     = (argc >= 3) ? std::stoi(argv[2]) : 0;
+  std::string payload_type   = (argc >= 4) ? argv[3] : "imu";
 
   int sock = ::socket(AF_INET, SOCK_DGRAM, 0);
   if (sock < 0) { perror("socket"); return 1; }
@@ -42,29 +45,8 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  // ---- Construct IMU protobuf ----
-  SensorBoardIMUInfo imu;
-  imu.set_accel_x(0.12f);
-  imu.set_accel_y(-9.81f);
-  imu.set_accel_z(0.05f);
+  PBEnvelope envelope = build_envelope(payload_type);
 
-  imu.set_gyro_x(0.01f);
-  imu.set_gyro_y(0.02f);
-  imu.set_gyro_z(0.03f);
-
-  imu.set_mag_x(30.0f);
-  imu.set_mag_y(1.5f);
-  imu.set_mag_z(-44.2f);
-
-  imu.set_is_calibrated(true);
-  imu.set_state(SENSOR_OPERATING);
-  imu.set_error_code(IMU_NO_ERROR);
-
-  // ---- Wrap in PBEnvelope ----
-  PBEnvelope envelope;
-  *envelope.mutable_imu_info() = imu;
-
-  // ---- Serialize envelope ----
   std::string payload;
   if (!envelope.SerializeToString(&payload)) {
     std::cerr << "SerializeToString failed\n";
@@ -72,13 +54,12 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  // ---- Send raw envelope bytes (no custom header) ----
   ssize_t sent = ::sendto(sock, payload.data(), payload.size(), 0,
                           reinterpret_cast<const sockaddr*>(&dst), sizeof(dst));
   if (sent < 0) { perror("sendto"); ::close(sock); return 1; }
 
-  std::cout << "Sent " << sent << " bytes (PBEnvelope/imu_info) to "
-            << server_ip << ":5000\n";
+  std::cout << "Sent " << sent << " bytes (PBEnvelope/" << payload_type
+            << ") to " << server_ip << ":5000\n";
 
   ::close(sock);
   return 0;
