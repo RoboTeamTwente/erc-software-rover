@@ -21,6 +21,7 @@
 #include "comms/udp/handlers/imu_handler.hpp"
 #include "comms/udp/handlers/gps_handler.hpp"
 #include "comms/udp/handlers/ph_handler.hpp"
+#include "comms/udp/handlers/diagnostics_handler.hpp"
 
 class UdpForwarderNode : public rclcpp::Node {
 public:
@@ -54,6 +55,9 @@ public:
     handlers_.emplace(
       static_cast<int>(PBEnvelope::kPhInfo),
       std::make_unique<PhHandler>(this, "ph_data", 10));
+    handlers_.emplace(
+      static_cast<int>(PBEnvelope::kSensorDiag),
+      std::make_unique<DiagnosticsHandler>(this, "sensor_board_diagnostics", 10));
 
     rx_thread_ = std::thread([this] { this->rx_loop(); });
 
