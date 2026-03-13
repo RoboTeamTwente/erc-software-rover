@@ -29,7 +29,7 @@ include(FetchContent)
 FetchContent_Declare(
   erc_protobufs
   GIT_REPOSITORY https://github.com/RoboTeamTwente/ERC-Protobufs.git
-  GIT_TAG c0e423bbd5cf930268cc5e69a8399b4d0ba1412d
+  GIT_TAG ae9dd8c2e66acfecca8c9ec684be0b81cc28e088
 )
 FetchContent_MakeAvailable(erc_protobufs)
 
@@ -38,15 +38,15 @@ set(PROTO_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
 file(MAKE_DIRECTORY "${PROTO_BINARY_DIR}")
 
 # Collect every .proto from the fetched repo
-# Collect ONLY component protos (avoid top-level *_board.proto that duplicate symbols)
+# Collect all component protos (envelope and all board types)
 file(GLOB_RECURSE ERC_PROTO_FILES
   "${erc_protobufs_SOURCE_DIR}/components/*.proto"
 )
 
-# If you need root-level common.proto, include it explicitly
-list(APPEND ERC_PROTO_FILES
-  "${erc_protobufs_SOURCE_DIR}/common.proto"
-)
+# Exclude message_types.proto: its enum values collide with message names in
+# the global proto3 namespace (upstream bug). We dispatch via PBEnvelope::payload_case()
+# so this file is unused by our code.
+list(FILTER ERC_PROTO_FILES EXCLUDE REGEX ".*/message_types\\.proto$")
 
 # ---- Generate explicitly (preserve folder structure) ----
 set(ERC_PROTO_SRCS "")
@@ -122,8 +122,8 @@ target_link_libraries(comms_node
   ${cpp_typesupport_target}
 )
 
-# target_include_directories(comms_node PRIVATE
-#   ${PROTO_BINARY_DIR}
-# )
+target_include_directories(comms_node PRIVATE
+  ${PROTO_BINARY_DIR}
+)
 
 ament_auto_package(USE_SCOPED_HEADER_INSTALL_DIR)
