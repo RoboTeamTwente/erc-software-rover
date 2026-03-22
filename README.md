@@ -56,5 +56,5 @@ export GALLIUM_DRIVER=d3d12
 export MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA
 
 # launch the simulation
-ros2 launch simulation simulation.launch.py
+ros2 launch rtt_simulation simulation.launch.py
 ```
