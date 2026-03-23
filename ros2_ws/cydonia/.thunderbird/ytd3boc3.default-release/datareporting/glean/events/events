@@ -1,0 +1,11 @@
+{"timestamp":11664298,"category":"mail","name":"ui_interaction","extra":{"id":"tab-close-button","source":"toolbox","glean_timestamp":"1774017786955"}}
+{"timestamp":11666713,"category":"mail","name":"ui_interaction","extra":{"source":"toolbox","id":"tab-close-button","glean_timestamp":"1774017789371"}}
+{"timestamp":11668797,"category":"mail","name":"ui_interaction","extra":{"id":"button-appmenu","glean_timestamp":"1774017791455","source":"toolbox"}}
+{"timestamp":11670201,"category":"mail","name":"ui_interaction","extra":{"glean_timestamp":"1774017792859","id":"appmenu-View","source":"toolbox"}}
+{"timestamp":11908640,"category":"mail","name":"ui_interaction","extra":{"source":"message-display","id":"browserContext-back","glean_timestamp":"1774018031298"}}
+{"timestamp":11911218,"category":"mail","name":"ui_interaction","extra":{"id":"key-previousUnreadMsg","source":"keyboard","glean_timestamp":"1774018033875"}}
+{"timestamp":11911450,"category":"mail","name":"ui_interaction","extra":{"id":"key-nextUnreadMsg","glean_timestamp":"1774018034107","source":"keyboard"}}
+{"timestamp":11911911,"category":"mail","name":"ui_interaction","extra":{"source":"keyboard","id":"key-nextUnreadMsg","glean_timestamp":"1774018034568"}}
+{"timestamp":11945528,"category":"mail","name":"ui_interaction","extra":{"source":"message-display","glean_timestamp":"1774018068185","id":"browserContext-back"}}
+{"timestamp":12033834,"category":"mail","name":"ui_interaction","extra":{"glean_timestamp":"1774018156492","source":"keyboard","id":"key-find"}}
+{"timestamp":12061250,"category":"mail","name":"ui_interaction","extra":{"glean_timestamp":"1774018183908","id":"messenger-window-close-button","source":"toolbox"}}

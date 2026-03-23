@@ -1,0 +1,7 @@
+# This file is created by ibus-daemon, please do not modify it.
+# This file allows processes on the machine to find the
+# ibus session bus with the below address.
+# If the IBUS_ADDRESS environment variable is set, it will
+# be used rather than this file.
+IBUS_ADDRESS=unix:abstract=/home/cydonia/.cache/ibus/dbus-TUdWeC0a,guid=d2ae9fb85461789ae46d1df669bd2f9a
+IBUS_DAEMON_PID=2794

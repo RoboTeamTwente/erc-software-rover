@@ -1,0 +1,12 @@
+services:
+  dev:
+    build: .
+    command:
+      - sleep
+      - inf
+    privileged: true
+    network_mode: host
+    environment:
+      DISPLAY: ${DISPLAY}
+    volumes:
+      - .:/ws

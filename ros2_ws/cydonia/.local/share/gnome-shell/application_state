@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<application-state>
+  <context id="">
+    <application id="org.gnome.Nautilus.desktop" score="10" last-seen="1774008967"/>
+    <application id="org.gnome.Terminal.desktop" score="22589.171875" last-seen="1774018640"/>
+    <application id="org.gnome.Software.desktop" score="44" last-seen="1774008686"/>
+    <application id="thunderbird.desktop" score="48" last-seen="1774018184"/>
+    <application id="yelp.desktop" score="0" last-seen="1773744396"/>
+    <application id="gnome-control-center.desktop" score="11" last-seen="1774018020"/>
+    <application id="gnome-wifi-panel.desktop" score="0" last-seen="0"/>
+    <application id="update-manager.desktop" score="0" last-seen="1774001235"/>
+    <application id="apport-gtk.desktop" score="4.5" last-seen="1774005209"/>
+    <application id="firefox.desktop" score="119" last-seen="1774019073"/>
+  </context>
+</application-state>

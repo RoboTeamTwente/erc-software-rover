@@ -1,0 +1,3 @@
+<library path="rtt_rover_driver">
+  <class type="rtt_rover_driver::RobotDriver" base_class_type="webots_ros2_driver::PluginInterface"/>
+</library>

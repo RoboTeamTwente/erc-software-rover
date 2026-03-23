@@ -1,0 +1,34 @@
+{
+  "Version": "22.04",
+  "OEM": {
+    "Vendor": "NVIDIA",
+    "Product": "NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super",
+    "Family": "Unknown"
+  },
+  "BIOS": {
+    "Vendor": "EDK II",
+    "Version": "36.4.7-gcid-42132812"
+  },
+  "Arch": "arm64",
+  "RAM": 7.8,
+  "Partitions": [
+    121.5,
+    0.1
+  ],
+  "Screens": [
+    {
+      "Size": "509mmx286mm",
+      "Resolution": "1920x1080",
+      "Frequency": "60.00"
+    }
+  ],
+  "Autologin": false,
+  "LivePatch": false,
+  "Session": {
+    "DE": "ubuntu:GNOME",
+    "Name": "ubuntu",
+    "Type": "x11"
+  },
+  "Language": "en_US",
+  "Timezone": "Europe/Amsterdam"
+}

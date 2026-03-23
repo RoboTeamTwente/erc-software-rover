@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xbel version="1.0"
+      xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks"
+      xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info"
+>
+  <bookmark href="file:///home/cydonia/Desktop/newfile" added="2026-02-13T11:53:35.584451Z" modified="2026-02-13T11:53:35.584462Z" visited="2026-02-13T11:53:35.584453Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/octet-stream"/>
+        <bookmark:applications>
+          <bookmark:application name="rviz2" exec="&apos;rviz2 %u&apos;" modified="2026-02-13T11:53:35.584456Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/cydonia/map_output.txt" added="2026-02-13T12:18:03.647885Z" modified="2026-02-13T12:40:03.539334Z" visited="2026-02-13T12:18:03.647888Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gedit %U&apos;" modified="2026-02-13T12:40:02.504500Z" count="2"/>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2026-02-13T12:40:03.539326Z" count="3"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/cydonia/YOUR_MAP_NAME.pgm" added="2026-02-13T12:33:17.267160Z" modified="2026-02-16T16:14:54.894177Z" visited="2026-02-13T12:33:17.267168Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/x-portable-graymap"/>
+        <bookmark:groups>
+          <bookmark:group>Graphics</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;eog %U&apos;" modified="2026-02-13T14:24:08.549711Z" count="7"/>
+          <bookmark:application name="Image Viewer" exec="&apos;eog %u&apos;" modified="2026-02-16T16:14:54.894171Z" count="5"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/cydonia/YOUR_MAP_NAME.yaml" added="2026-02-13T12:34:06.658593Z" modified="2026-02-16T16:19:33.803680Z" visited="2026-02-13T12:34:06.658593Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/x-yaml"/>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2026-02-16T15:57:09.797985Z" count="5"/>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gedit %U&apos;" modified="2026-02-16T16:19:33.803672Z" count="5"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/cydonia/Desktop/rviz_screenshot_2026_02_16-13_53_27.png" added="2026-02-16T12:53:34.235321Z" modified="2026-02-16T12:53:42.086113Z" visited="2026-02-16T12:53:34.235324Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/png"/>
+        <bookmark:groups>
+          <bookmark:group>Graphics</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="rviz2" exec="&apos;rviz2 %u&apos;" modified="2026-02-16T12:53:34.235331Z" count="1"/>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;eog %U&apos;" modified="2026-02-16T12:53:40.974858Z" count="1"/>
+          <bookmark:application name="Image Viewer" exec="&apos;eog %u&apos;" modified="2026-02-16T12:53:42.086110Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/cydonia/new_map.pgm" added="2026-02-16T16:43:43.481765Z" modified="2026-02-16T16:43:43.481777Z" visited="2026-02-16T16:43:43.481767Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/x-portable-graymap"/>
+        <bookmark:groups>
+          <bookmark:group>Graphics</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="Image Viewer" exec="&apos;eog %u&apos;" modified="2026-02-16T16:43:43.481772Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/cydonia/new_map.yaml" added="2026-02-16T16:43:57.424381Z" modified="2026-02-16T16:43:58.567581Z" visited="2026-02-16T16:43:57.424383Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/x-yaml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gedit %U&apos;" modified="2026-02-16T16:43:57.424387Z" count="1"/>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2026-02-16T16:43:58.567576Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/cydonia/Desktop/rviz_screenshot_2026_02_17-11_16_33.png" added="2026-02-17T10:16:38.780169Z" modified="2026-02-17T14:23:31.316229Z" visited="2026-02-17T10:16:38.780172Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/png"/>
+        <bookmark:groups>
+          <bookmark:group>Graphics</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="rviz2" exec="&apos;rviz2 %u&apos;" modified="2026-02-17T10:16:38.780175Z" count="1"/>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;eog %U&apos;" modified="2026-02-17T14:23:31.316220Z" count="3"/>
+          <bookmark:application name="Image Viewer" exec="&apos;eog %u&apos;" modified="2026-02-17T10:17:20.408008Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/cydonia/ros2_ws/bridge/CMakeLists.txt" added="2026-03-03T16:07:41.737441Z" modified="2026-03-03T16:07:44.554394Z" visited="2026-03-03T16:07:41.737444Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/x-cmake"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gedit %U&apos;" modified="2026-03-03T16:07:41.737448Z" count="1"/>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2026-03-03T16:07:44.554389Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+</xbel>

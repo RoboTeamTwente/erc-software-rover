@@ -1,0 +1,6 @@
+[user]
+	name = cydonia
+	email = test@gmail.com
+[safe]
+	directory = /home/cydonia/ros2_ws/
+	directory = /home/cydonia/ros2_ws
