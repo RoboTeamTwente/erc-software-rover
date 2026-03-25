@@ -24,4 +24,4 @@ install(FILES
   ${erc_control_steering_SOURCE_DIR}/control_ert_rtw/rtwtypes.h
   DESTINATION include/rtt_rover_control)
 
-ament_auto_package()
+ament_auto_package(USE_SCOPED_HEADER_INSTALL_DIR)
