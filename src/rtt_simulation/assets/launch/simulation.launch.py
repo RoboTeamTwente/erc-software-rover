@@ -15,7 +15,7 @@ from webots_ros2_driver.webots_launcher import WebotsLauncher
 
 
 def generate_launch_description():
-    assets_dir = get_package_share_path("simulation")
+    assets_dir = get_package_share_path("rtt_simulation")
 
     simulator = WebotsLauncher(
         world=assets_dir / "worlds" / "simulation.wbt",
