@@ -1,0 +1,7 @@
+﻿---
+BasedOnStyle: 'Google'
+IndentCaseLabels: 'no'
+IndentWidth: '4'
+InsertNewlineAtEOF: 'true'
+PointerAlignment: 'Right'
+...
