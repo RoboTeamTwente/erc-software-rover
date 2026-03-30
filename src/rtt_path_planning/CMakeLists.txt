@@ -13,7 +13,7 @@ ament_auto_add_executable(rtt_path_planning DIRECTORY src)
 install(DIRECTORY assets/ DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
+  ament_auto_find_test_dependencies()
   # the following line skips the linter which checks for copyrights
   # comment the line when a copyright and license is added to all source files
   set(ament_cmake_copyright_FOUND TRUE)
