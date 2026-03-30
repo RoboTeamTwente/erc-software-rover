@@ -22,6 +22,15 @@ if(BUILD_TESTING)
   # a copyright and license is added to all source files
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(Catch2 2 REQUIRED)
+
+  ament_auto_add_executable(path_planning_test DIRECTORY tests)
+  target_link_libraries(path_planning_test Catch2::Catch2WithMain)
+
+  include(CTest)
+  include(Catch)
+  catch_discover_tests(path_planning_test)
 endif()
 
 ament_auto_package(USE_SCOPED_HEADER_INSTALL_DIR)
