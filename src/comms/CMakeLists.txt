@@ -34,9 +34,10 @@ include(FetchContent)
 FetchContent_Declare(
   erc_protobufs
   GIT_REPOSITORY https://github.com/RoboTeamTwente/ERC-Protobufs.git
-  GIT_TAG ae9dd8c2e66acfecca8c9ec684be0b81cc28e088
+  GIT_TAG f178f8e9ac41206dcce48f6feb0b647bf02dffdb
 )
 FetchContent_MakeAvailable(erc_protobufs)
+
 
 # Where generated .pb.h/.pb.cc will go
 set(PROTO_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
