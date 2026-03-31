@@ -9,13 +9,13 @@ from launch_ros.substitutions import FindPackageShare
 
 
 nav2_params = PathJoinSubstitution([
-    FindPackageShare("slam"),
+    FindPackageShare("rtt_slam"),
     "config",
     "nav2_params.yaml"
 ])
 
 stvl_params = PathJoinSubstitution([
-    FindPackageShare("slam"),
+    FindPackageShare("rtt_slam"),
     "config",
     "stvl_params.yaml"
 ])
@@ -110,7 +110,7 @@ def generate_launch_description():
        # name='video_stream',
        # output='screen',
        # parameters=[
-       #     PathJoinSubstitution([FindPackageShare('slam'), 'config', 'new_params.yaml']),
+       #     PathJoinSubstitution([FindPackageShare('rtt_slam'), 'config', 'new_params.yaml']),
        #     ]
        # ),
 
