@@ -1,0 +1,9 @@
+[submodule "src/librealsense"]
+	path = src/librealsense
+	url = https://github.com/realsenseai/librealsense
+[submodule "src/realsense-ros"]
+	path = src/realsense-ros
+	url = https://github.com/realsenseai/realsense-ros
+[submodule "src/ros-gst-bridge"]
+	path = src/ros-gst-bridge
+	url = https://github.com/BrettRD/ros-gst-bridge

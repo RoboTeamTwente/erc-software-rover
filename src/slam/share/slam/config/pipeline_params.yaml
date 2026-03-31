@@ -1,0 +1,15 @@
+pipeline_node:
+  ros__parameters:
+
+    simple_bins:
+      - video_stream_bin
+
+    video_stream_bin:
+      descr: >
+        rosimagesrc ros-topic="/camera/camera/color/image_raw" !
+        videoconvert !
+        video/x-raw,format=I420 !
+        x264enc tune=zerolatency speed-preset=superfast byte-stream=true key-int-max=15 intra-refresh=true !
+        rtph264pay pt=96 !
+        udpsink host=145.126.41.151 port=4500
+
