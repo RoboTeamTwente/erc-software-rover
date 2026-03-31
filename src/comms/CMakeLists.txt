@@ -103,7 +103,7 @@ ament_auto_add_executable(comms_node
   src/handlers/sensor_board/diagnostics_handler.cpp
 )
 ament_auto_add_executable(udp_client
-  assets/udp_client.cpp
+  src/udp_client.cpp
   assets/test_payloads/sensor_board/imu_payload.cpp
   assets/test_payloads/sensor_board/gps_payload.cpp
   assets/test_payloads/sensor_board/ph_payload.cpp
