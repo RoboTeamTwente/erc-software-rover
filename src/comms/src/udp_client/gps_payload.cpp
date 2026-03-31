@@ -1,4 +1,4 @@
-#include "gps_payload.hpp"
+#include "comms/udp_client/gps_payload.hpp"
 
 #include "components/sensor_board/gps_sensor.pb.h"
 #include "components/sensor_board/sensor.pb.h"

@@ -105,7 +105,7 @@ ament_auto_add_executable(udp_client DIRECTORY src/udp_client)
 # Make sure it can see generated .pb.h files and the test_payloads/ headers
 target_include_directories(udp_client PRIVATE
   ${PROTO_BINARY_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/assets
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 # Ensure protos are generated and compiled before building client
