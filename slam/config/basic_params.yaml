@@ -1,0 +1,14 @@
+costmap:
+  costmap:
+    ros__parameters:
+      global_frame: odom
+      rolling_window: true
+      width: 5
+      height: 5
+      resolution: 0.05
+      robot_base_frame: base_link
+      plugins: ["inflation_layer"]
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        inflation_radius: 0.5
+        cost_scaling_factor: 3.0
