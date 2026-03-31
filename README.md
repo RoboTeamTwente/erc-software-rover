@@ -37,6 +37,7 @@ rosdep install --from-paths --ignore-src --default-yes src
 # librealsense2 must be built with different CMake options
 colcon build --packages-select=librealsense2 \
   --cmake-args=-DFORCE_LIBUVC=ON \
+  --cmake-args=-DCHECK_FOR_UPDATES=OFF \
   --cmake-args=-DBUILD_WITH_CUDA=ON \
   --cmake-args=-DCUDAToolkit_ROOT=/usr/local/cuda
 
