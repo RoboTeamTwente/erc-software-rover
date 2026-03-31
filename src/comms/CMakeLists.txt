@@ -100,13 +100,7 @@ ament_auto_add_executable(comms_node
   src/handlers/sensor_board/ph_handler.cpp
   src/handlers/sensor_board/diagnostics_handler.cpp
 )
-ament_auto_add_executable(udp_client
-  src/udp_client.cpp
-  assets/test_payloads/sensor_board/imu_payload.cpp
-  assets/test_payloads/sensor_board/gps_payload.cpp
-  assets/test_payloads/sensor_board/ph_payload.cpp
-  assets/test_payloads/sensor_board/diagnostics_payload.cpp
-)
+ament_auto_add_executable(udp_client DIRECTORY src/udp_client)
 
 # Make sure it can see generated .pb.h files and the test_payloads/ headers
 target_include_directories(udp_client PRIVATE
