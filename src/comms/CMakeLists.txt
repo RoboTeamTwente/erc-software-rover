@@ -23,8 +23,6 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/SensorBoardDiagnostics.msg"
 )
 
-ament_export_dependencies(rosidl_default_runtime)
-
 
 # --- Protobuf ---
 find_package(Protobuf REQUIRED)
