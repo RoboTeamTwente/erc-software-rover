@@ -9,6 +9,9 @@ log/
 # clangd
 .cache/clangd/
 
+# .vscode
+.vscode/
+
 # webots
 *.wbproj
 src/*/assets/worlds/*.jpg
