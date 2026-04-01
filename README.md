@@ -39,7 +39,7 @@ colcon build --packages-select librealsense2 --cmake-args \
   -DFORCE_RSUSB_BACKEND=ON \
   -DCHECK_FOR_UPDATES=OFF \
   -DBUILD_WITH_CUDA=ON \
-  -DCUDAToolkit_ROOT=/usr/local/cuda
+  -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
 
 # actually build, if your computer is low on RAM then use --executor sequential
 colcon build
