@@ -36,10 +36,10 @@ rosdep install --from-paths --ignore-src --default-yes src
 
 # librealsense2 must be built with different CMake options
 colcon build --packages-select librealsense2 --cmake-args \
-  -DFORCE_RSUSB_BACKEND=ON \
-  -DCHECK_FOR_UPDATES=OFF \
-  -DBUILD_WITH_CUDA=ON \
-  -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
+  -DBUILD_WITH_CUDA=ON                                    \
+  -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc          \
+  -DCHECK_FOR_UPDATES=OFF                                 \
+  -DFORCE_RSUSB_BACKEND=ON
 
 # actually build, if your computer is low on RAM then use --executor sequential
 colcon build
