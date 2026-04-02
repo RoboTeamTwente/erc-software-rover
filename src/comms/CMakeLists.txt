@@ -32,7 +32,7 @@ include(FetchContent)
 FetchContent_Declare(
   erc_protobufs
   GIT_REPOSITORY https://github.com/RoboTeamTwente/ERC-Protobufs.git
-  GIT_TAG f178f8e9ac41206dcce48f6feb0b647bf02dffdb
+  GIT_TAG 761315150367bc9c7d4f5b5ecb513344dba51110
 )
 FetchContent_MakeAvailable(erc_protobufs)
 
@@ -105,7 +105,7 @@ ament_auto_add_executable(udp_client DIRECTORY src/udp_client)
 # Make sure it can see generated .pb.h files and the test_payloads/ headers
 target_include_directories(udp_client PRIVATE
   ${PROTO_BINARY_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/include
+  # ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 # Ensure protos are generated and compiled before building client
@@ -114,10 +114,7 @@ target_link_libraries(udp_client
   protobuf::libprotobuf
 )
 
-install(TARGETS udp_client
-  DESTINATION lib/${PROJECT_NAME}
-)
-# ROS message
+# # ROS message
 rosidl_get_typesupport_target(cpp_typesupport_target
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 

@@ -1,6 +1,0 @@
-{
-    "conventionalCommits.scopes": [
-        "aruco_track"
-    ],
-    "cmake.sourceDirectory": "/root/erc-software-rover/src/build/comms/_deps/erc_protobufs-subbuild"
-}

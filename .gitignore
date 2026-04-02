@@ -15,4 +15,3 @@ log/
 # webots
 *.wbproj
 src/*/assets/worlds/*.jpg
-src/comms/assets/ubuntu.code-workspace
