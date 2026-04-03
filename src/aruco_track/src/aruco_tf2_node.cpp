@@ -81,11 +81,22 @@ class ArucoTf2Node : public rclcpp::Node {
 
         marker_length_ = 0.05;  // meters
 
-        dictionary_ =
-            cv::aruco::getPredefinedDictionary(cv::aruco::DICT_5X5_250);
-        detector_params_ = cv::aruco::DetectorParameters::create();
+        // 4.6 to 4.8 change here. Construct Dictionary and DetectorParameters directly then pass to ArucoDetector
+        cv::aruco::Dictionary dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_5X5_250);
+        cv::aruco::DetectorParameters params;
+        detector_ = cv::aruco::ArucoDetector(dictionary, params);
+        
+        // in 4.8 they deprecated the estimatePoseSingleMarkers function, and we are supposed to use solvePnP instead.
+        // Build the 3D object points for a single marker. This will be used by solvePnP to estimate the pose of each detected marker.
+        float h = marker_length_ / 2.0f;
+        obj_points_ = {
+            {-h,  h, 0.0f},
+            { h,  h, 0.0f},
+            { h, -h, 0.0f},
+            {-h, -h, 0.0f}
+        };
 
-        // --- NEW: choose video source interactively ---
+        // Choose video source interactively
         const std::string src = prompt_video_source();
 
         bool opened = false;
@@ -151,10 +162,10 @@ class ArucoTf2Node : public rclcpp::Node {
 
         std::vector<int> ids;
         std::vector<std::vector<cv::Point2f>> corners;
-        std::vector<cv::Vec3d> rvecs, tvecs;
+        std::vector<std::vector<cv::Point2f>> rejected;
 
-        cv::aruco::detectMarkers(frame, dictionary_, corners, ids,
-                                 detector_params_);
+        // OpenCV 4.8 change: use ArucoDetector::detectMarkers instead of the static function
+        detector_.detectMarkers(frame, corners, ids, rejected);
 
         // Note: Throttle the "No markers found" warning so your terminal
         // doesn't scream in pain with a warning every 33ms
@@ -163,22 +174,19 @@ class ArucoTf2Node : public rclcpp::Node {
                                  3000,  // ms
                                  "No markers found");
             return;
-        } else {
-            cv::aruco::drawDetectedMarkers(frame, corners, ids);
-            cv::aruco::estimatePoseSingleMarkers(corners, marker_length_,
-                                                 camera_matrix_, dist_coeffs_,
-                                                 rvecs, tvecs);
-
-            for (size_t i = 0; i < ids.size(); ++i) {
-                publish_transform(ids[i], rvecs[i], tvecs[i]);
-            }
         }
 
-        // Note: If you put the next two lines at the top of the
-        // 'process_frame()' function, you will open the OpenCV window of your
-        // camera stream even if you don't detect ARUCO Markers.
-        cv::imshow("aruco_view", frame);
-        cv::waitKey(1);
+        // OpenCV 4.8: estimatePoseSIngleMarkers is deprecated, we are using solvePnP per marker instead.
+        for (size_t i = 0; i < ids.size(); i++) {
+            cv::Vec3d rvec, tvec;
+            cv::solvePnP(obj_points_, corners[i], camera_matrix_, dist_coeffs_,
+                         rvec, tvec);
+            publish_transform(ids[i], rvec, tvec);
+        }
+
+        // Showing the camera feed in an application. THis thing fails on my Ubuntu 22.04 DEV CONTAINER (needs a bit of configuration). This is why I commented it out for now. We are relying on the "tf2" topic echo information.
+        // cv::imshow("aruco_view", frame);
+        // cv::waitKey(1);
     }
 
     void publish_transform(int id, const cv::Vec3d &rvec,
@@ -210,15 +218,20 @@ class ArucoTf2Node : public rclcpp::Node {
         t.transform.rotation.w = q.w();
 
         tf_broadcaster_->sendTransform(t);
+
+        RCLCPP_DEBUG(this->get_logger(),
+            "[ArUco] Detected marker id=%d | t=[%.3f, %.3f, %.3f]",
+            id, tvec[0], tvec[1], tvec[2]);
     }
 
     // Members
     cv::VideoCapture cap_;
     cv::Mat camera_matrix_, dist_coeffs_;
     double marker_length_;
+    std::vector<cv::Point3f> obj_points_;
 
-    cv::Ptr<cv::aruco::Dictionary> dictionary_;
-    cv::Ptr<cv::aruco::DetectorParameters> detector_params_;
+    // OpenCV 4.8: ArucoDetector replaces dictionary_ + detector_params_
+    cv::aruco::ArucoDetector detector_;
 
     std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
     rclcpp::TimerBase::SharedPtr timer_;
@@ -234,3 +247,6 @@ int main(int argc, char **argv) {
     rclcpp::shutdown();
     return 0;
 }
+
+
+

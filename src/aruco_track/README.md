@@ -14,18 +14,14 @@ Every time you update the code within 'src/aruco_tf2_node.cpp' you must rebuild 
 
 ### Step 1 - Build
 
-```bash
-colcon build --packages-select aruco_track
-```
+1. Run `./src/aruco_track/assets/install_deps.sh` once
+2. `git submodule update --init --recursive`
+3. `colcon build --packages-select aruco_track`
 
 ### Step 2 - Source the terminal
 
 ```bash
 . ./install/setup.bash
-```
-
-```bash
-. /opt/ros/kilted/setup.bash
 ```
 
 ### Step 3 - Run the ROS2 Node
