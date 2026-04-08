@@ -1,0 +1,133 @@
+
+cmake_minimum_required(VERSION 3.20)
+project(comms)
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# --- ROS / ament ---
+find_package(ament_cmake_auto REQUIRED)
+ament_auto_find_build_dependencies()
+
+# Generate ROS 2 interfaces from msg/
+find_package(rosidl_default_generators REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/SensorState.msg"
+  "msg/ImuSensorInformation.msg"
+  "msg/SensorBoardGPSInfo.msg"
+  "msg/SensorBoardPHInfo.msg"
+  "msg/SensorBoardDiagnostics.msg"
+)
+
+
+# --- Protobuf ---
+find_package(Protobuf REQUIRED)
+
+include(FetchContent)
+
+FetchContent_Declare(
+  erc_protobufs
+  GIT_REPOSITORY https://github.com/RoboTeamTwente/ERC-Protobufs.git
+  GIT_TAG 761315150367bc9c7d4f5b5ecb513344dba51110
+)
+FetchContent_MakeAvailable(erc_protobufs)
+
+
+# Where generated .pb.h/.pb.cc will go
+set(PROTO_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
+file(MAKE_DIRECTORY "${PROTO_BINARY_DIR}")
+
+# Collect every .proto from the fetched repo
+# Collect all component protos (envelope and all board types)
+file(GLOB_RECURSE ERC_PROTO_FILES
+  "${erc_protobufs_SOURCE_DIR}/components/*.proto"
+)
+
+# Exclude message_types.proto: its enum values collide with message names in
+# the global proto3 namespace (upstream bug). We dispatch via PBEnvelope::payload_case()
+# so this file is unused by our code.
+list(FILTER ERC_PROTO_FILES EXCLUDE REGEX ".*/message_types\\.proto$")
+
+# ---- Generate explicitly (preserve folder structure) ----
+set(ERC_PROTO_SRCS "")
+set(ERC_PROTO_HDRS "")
+
+foreach(f ${ERC_PROTO_FILES})
+  file(RELATIVE_PATH rel "${erc_protobufs_SOURCE_DIR}" "${f}")
+  get_filename_component(rel_dir "${rel}" DIRECTORY)
+  get_filename_component(base "${rel}" NAME_WE)
+
+  file(MAKE_DIRECTORY "${PROTO_BINARY_DIR}/${rel_dir}")
+
+  list(APPEND ERC_PROTO_SRCS "${PROTO_BINARY_DIR}/${rel_dir}/${base}.pb.cc")
+  list(APPEND ERC_PROTO_HDRS "${PROTO_BINARY_DIR}/${rel_dir}/${base}.pb.h")
+endforeach()
+
+add_custom_command(
+  OUTPUT ${ERC_PROTO_SRCS} ${ERC_PROTO_HDRS}
+  COMMAND ${CMAKE_COMMAND} -E make_directory "${PROTO_BINARY_DIR}"
+  COMMAND ${Protobuf_PROTOC_EXECUTABLE}
+    --cpp_out=${PROTO_BINARY_DIR}
+    -I ${erc_protobufs_SOURCE_DIR}
+    ${ERC_PROTO_FILES}
+  DEPENDS ${ERC_PROTO_FILES}
+  COMMENT "Generating C++ protobuf sources"
+  VERBATIM
+)
+
+
+# Compile generated .pb.cc into an object library
+add_library(erc_proto_objects OBJECT
+  ${ERC_PROTO_SRCS}
+)
+
+target_include_directories(erc_proto_objects PUBLIC
+  $<BUILD_INTERFACE:${PROTO_BINARY_DIR}>
+)
+
+target_link_libraries(erc_proto_objects PUBLIC
+  protobuf::libprotobuf
+)
+# --- Your ROS node executable ---
+ament_auto_add_executable(comms_node
+  src/udp_forwarder_node.cpp
+  src/handlers/sensor_board/imu_handler.cpp
+  src/handlers/sensor_board/gps_handler.cpp
+  src/handlers/sensor_board/ph_handler.cpp
+  src/handlers/sensor_board/diagnostics_handler.cpp
+)
+ament_auto_add_executable(udp_client DIRECTORY src/udp_client)
+
+# Make sure it can see generated .pb.h files and the test_payloads/ headers
+target_include_directories(udp_client PRIVATE
+  ${PROTO_BINARY_DIR}
+  # ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+# Ensure protos are generated and compiled before building client
+target_link_libraries(udp_client
+  erc_proto_objects
+  protobuf::libprotobuf
+)
+
+# # ROS message
+rosidl_get_typesupport_target(cpp_typesupport_target
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+
+# Link generated protos into the node (plain signature)
+target_link_libraries(comms_node
+  erc_proto_objects
+  protobuf::libprotobuf
+  ${cpp_typesupport_target}
+)
+
+target_include_directories(comms_node PRIVATE
+  ${PROTO_BINARY_DIR}
+)
+
+ament_auto_package(USE_SCOPED_HEADER_INSTALL_DIR)

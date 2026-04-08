@@ -1,3 +1,6 @@
+# Claude Code
+CLAUDE.md
+
 # colcon
 build/
 install/
@@ -5,6 +8,9 @@ log/
 
 # clangd
 .cache/clangd/
+
+# .vscode
+.vscode/
 
 # webots
 *.wbproj
