@@ -6,8 +6,7 @@ RUN apt-get upgrade -y
 RUN rosdep update
 
 # install project dependencies
-COPY --parents src/*/package.xml .
-COPY --parents src/*/*/package.xml .
-RUN rosdep install --from-path --ignore-src -y /ws/src
+RUN --mount=dst=/ws \
+  rosdep install --from-path --ignore-src -y src
 
 CMD ["sleep", "inf"]
