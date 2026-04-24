@@ -1,10 +1,8 @@
 import os
-import sys
-import launch
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, GroupAction, ExecuteProcess, TimerAction
 from launch.substitutions import PathJoinSubstitution
-from launch_ros.actions import Node, SetRemap
+from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
@@ -14,173 +12,146 @@ nav2_params = PathJoinSubstitution([
     "nav2_params.yaml"
 ])
 
-stvl_params = PathJoinSubstitution([
-    FindPackageShare("rtt_slam"),
-    "config",
-    "stvl_params.yaml"
-])
-
-STVL_PARAMS = os.path.join(
-    os.path.expanduser('~'),
-    'erc-software-rover/ros2_ws/cydonia/ros2_ws/slam/config/stvl_params.yaml'
-)
-
-BASIC_PARAMS = os.path.join(os.path.expanduser('~'), 'erc-software-rover/ros2_ws/cydonia/ros2_ws/slam/config/basic_params.yaml')
 
 def generate_launch_description():
     return LaunchDescription([
-        #Delete database of old map before beginning
-        #ExecuteProcess(
-        #    cmd=['rm', '-r', os.path.expanduser('~/.ros/rtabmap.db')],
-        #    output='screen',
-        #),
-        # Launch realsense2_camera with IMU and depth enabled
-        GroupAction(
-        actions=[
-        IncludeLaunchDescription(
-            PathJoinSubstitution([FindPackageShare('realsense2_camera'), 'launch', 'rs_launch.py']),
-            launch_arguments={
-                'enable_gyro': 'True',
-                'enable_accel': 'True',
-                'unite_imu_method': '2',
-                'align_depth.enable': 'True',
-                'enable_rgbd': 'True',
-                #'pointcloud__neon_.enable': 'True',
-                'pointcloud.enable': 'True',
-                'enable_depth': 'True',
-                'enable_color': 'True',
-                #'publish_tf': 'False',
-                'enable_sync': 'True',
-            }.items(),
-        )]),
 
-        # Wait 6 seconds before setting the pointcloud parameter
-        # TimerAction(
-        # period=6.0,  # seconds
-        # actions=[
-        #     ExecuteProcess(
-        #     cmd=['ros2', 'param', 'set', '/camera/camera', 'pointcloud__neon_.enable', 'true'],
-        #     output='screen'
-        # )
-        # ]
-        # ),
-        
-        # Launch imu_filter_madgwick with the specified arguments
-        # Node(
-        #     package='imu_filter_madgwick',
-        #     executable='imu_filter_madgwick_node',
-        #     name='imu_filter_madgwick',
-        #     output='screen',
-        #     parameters=[{
-        #         'use_mag': False,
-        #         #'publish_tf': False,
-        #         'world_frame': 'enu'
-        #     }],
-        #     remappings=[
-        #         ('/imu/data_raw', '/camera/camera/imu'),
-        #         ('/imu/data', '/imu/data')
-        #     ]
-        # ),
-        
-        # Launch rtabmap with all the required topics and parameters
-        #IncludeLaunchDescription(
-        #    PathJoinSubstitution([FindPackageShare('rtabmap_launch'), 'launch', 'rtabmap.launch.py']),
-        #    launch_arguments={
-        #        'rgb_topic': '/camera/camera/color/image_raw',
-        #        'depth_topic': '/camera/camera/depth/image_rect_raw',
-        #        'camera_info_topic': '/camera/camera/color/camera_info',
-        #        'imu_topic': '/imu/data',
-        #        'approx_sync': 'True',
-        #        'frame_id': 'base_link',
-        #        'subscribe_imu': 'True',
-        #        'use_sim_time': 'False',
-        #        'Grid/FromDepth': 'True',
-        #        'Grid/RangeMax': '2.0',
-        #        'Grid/RangeMin': '0.05',
-        #        'Grid/CellSize': '0.02',
-        #        'Grid/UseVoxelFilter': 'True',
-        #        'Grid/FilterSize': '0.1',
-        #        'odom_frame_id': 'odom',
-        #    }.items(),
-        #),
+        # Delete database of old map before beginning
+        ExecuteProcess(
+            cmd=['rm', '-f', os.path.expanduser('~/.ros/rtabmap.db')],
+            output='screen',
+        ),
 
-       # Node(
-       # package='gst_pipeline',
-       # executable='pipeline_node',
-       # name='video_stream',
-       # output='screen',
-       # parameters=[
-       #     PathJoinSubstitution([FindPackageShare('rtt_slam'), 'config', 'new_params.yaml']),
-       #     ]
-       # ),
+        # Static transform between base_link and camera_link
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='base_to_camera_tf',
+            arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'camera_link'],
+        ),
 
-        # Stream video to basestation
-        #ExecuteProcess(
-        #   cmd=['/bin/bash', os.path.expanduser('~/stream.sh')],
-        #   output='screen',
-        #),
+        TimerAction(
+            period=5.0,
+            actions=[
 
-        # Try with streaming node 
-       # Node(
-       #     package='streaming',  
-       #     executable='stream_video',
-       #     name='video_stream_node',
-       #     output='screen',
-       # ),
+                # Launch realsense2_camera with IMU and depth enabled
+                GroupAction(
+                    actions=[
+                        IncludeLaunchDescription(
+                            PathJoinSubstitution([
+                                FindPackageShare('realsense2_camera'),
+                                'launch',
+                                'rs_launch.py'
+                            ]),
+                            launch_arguments={
+                                'enable_gyro':                'True',
+                                'enable_accel':               'True',
+                                'unite_imu_method':           '2',
+                                'align_depth.enable':         'True',
+                                'enable_rgbd':                'True',
+                                'pointcloud.enable':          'True',
+                                'enable_depth':               'True',
+                                'enable_color':               'True',
+                                'publish_tf':                 'True',
+                                'enable_sync':                'True',
+                                'rgb_camera.color_profile':   '424,240,30',
+                                'depth_module.depth_profile': '424,240,30',
+                            }.items(),
+                        )
+                    ]
+                ),
 
-       #Launch Nav2
-       #IncludeLaunchDescription(
-       #PathJoinSubstitution([
-       # FindPackageShare('nav2_bringup'),
-       # 'launch',
-       # 'navigation_launch.py'
-       # ]),
-       # launch_arguments={
-       # 'params_file': nav2_params,
-       # 'use_sim_time': 'False'
-       # }.items(),
-       # )
-        
-       # Launch Nav2
-#       Node(
-#       package='nav2_costmap_2d',
-#       executable='nav2_costmap_2d',
-#       name='costmap',
-#       output='screen',
-#       parameters=[STVL_PARAMS],
-#    ),
-#        Node(
-#     package='tf2_ros',
-#     executable='static_transform_publisher',
-#     arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'camera_link']
-#         ),
-#     Node(
-#     package='tf2_ros',
-#     executable='static_transform_publisher',
-#     arguments=['0', '0', '0', '-0.5', '0.5', '-0.5', '0.5', 'camera_link', 'camera_depth_optical_frame']
-# ),
-# 
-#     # camera_link → camera_color_optical_frame
-# Node(
-#     package='tf2_ros',
-#     executable='static_transform_publisher',
-#     arguments=['0', '0', '0', '-0.5', '0.5', '-0.5', '0.5',
-#                'camera_link', 'camera_color_optical_frame']
-# ),
-# # camera_link → camera_depth_optical_frame  
-# Node(
-#     package='tf2_ros',
-#     executable='static_transform_publisher',
-#     arguments=['0', '0', '0', '-0.5', '0.5', '-0.5', '0.5',
-#                'camera_link', 'camera_depth_optical_frame']
-# ),
-# # camera_link → camera_infra1_optical_frame (rtabmap may need this too)
-# Node(
-#     package='tf2_ros',
-#     executable='static_transform_publisher',
-#     arguments=['0', '0', '0', '-0.5', '0.5', '-0.5', '0.5',
-#                'camera_link', 'camera_infra1_optical_frame']
-# ),
+                # IMU filter - fuses gyro + accel into /imu/data
+                Node(
+                    package='imu_filter_madgwick',
+                    executable='imu_filter_madgwick_node',
+                    name='imu_filter_madgwick',
+                    output='screen',
+                    parameters=[{
+                        'use_mag':      False,
+                        'publish_tf':   False,
+                        'world_frame':  'enu',
+                    }],
+                    remappings=[
+                        ('/imu/data_raw', '/camera/camera/imu'),
+                        ('/imu/data',     '/imu/data'),
+                    ]
+                ),
 
-    ])
+                # Visual-Inertial Odometry node
+                # Publishes: odom -> base_link TF and /odom topic
+                Node(
+                    package='rtabmap_odom',
+                    executable='rgbd_odometry',
+                    name='rtabmap_odom',
+                    output='screen',
+                    parameters=[{
+                        'frame_id':                 'base_link',
+                        'approx_sync':              True,
+                        'approx_sync_max_interval': 0.02,
+                        'subscribe_imu':            True,
+                        'use_sim_time':             False,
+                    }],
+                    remappings=[
+                        ('rgb/image',       '/camera/camera/color/image_raw'),
+                        ('rgb/camera_info', '/camera/camera/color/camera_info'),
+                        ('depth/image',     '/camera/camera/depth/image_rect_raw'),
+                        ('imu',             '/imu/data'),
+                    ],
+                ),
 
+                # RTAB-Map SLAM node
+                # Consumes /odom from rgbd_odometry above
+                # Publishes: map -> odom TF
+                Node(
+                    package='rtabmap_slam',
+                    executable='rtabmap',
+                    name='rtabmap',
+                    output='screen',
+                    parameters=[{
+                        'subscribe_depth':      True,
+                        'subscribe_rgb':        True,
+                        'subscribe_imu':        False,   # IMU handled by odom node
+                        'subscribe_odom_info':  True,
+                        'frame_id':             'base_link',
+                        'approx_sync':          True,
+                        'use_sim_time':         False,
+                        'Grid/FromDepth':       'True',
+                        'Grid/RangeMax':        '2.0',
+                        'Grid/RangeMin':        '0.05',
+                        'Grid/CellSize':        '0.02',
+                        'Grid/UseVoxelFilter':  'True',
+                        'Grid/FilterSize':      '0.1',
+                    }],
+                    remappings=[
+                        ('rgb/image',       '/camera/camera/color/image_raw'),
+                        ('rgb/camera_info', '/camera/camera/color/camera_info'),
+                        ('depth/image',     '/camera/camera/depth/image_rect_raw'),
+                        ('odom',            '/odom'),
+                    ],
+                    arguments=['--delete_db_on_start'],
+                ),
+
+                # Stream video to basestation
+                ExecuteProcess(
+                    cmd=['/bin/bash', os.path.expanduser('~/stream.sh')],
+                    output='screen',
+                ),
+
+                # Launch Nav2 with custom params (stvl_layer)
+                IncludeLaunchDescription(
+                    PathJoinSubstitution([
+                        FindPackageShare('nav2_bringup'),
+                        'launch',
+                        'navigation_launch.py'
+                    ]),
+                    launch_arguments={
+                        'params_file':  nav2_params,
+                        'use_sim_time': 'False',
+                    }.items(),
+                ),
+
+            ]  # end TimerAction actions
+        ),  # end TimerAction
+
+    ])  # end LaunchDescription
