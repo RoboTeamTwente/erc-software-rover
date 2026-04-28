@@ -12,6 +12,12 @@ nav2_params = PathJoinSubstitution([
     "nav2_params.yaml"
 ])
 
+new_params = PathJoinSubstitution([
+    FindPackageShare("rtt_slam"),
+    "config",
+    "new_params.yaml"
+])
+
 
 def generate_launch_description():
     return LaunchDescription([
@@ -31,7 +37,7 @@ def generate_launch_description():
         ),
 
         TimerAction(
-            period=5.0,
+            period=3.0,
             actions=[
 
                 # Launch realsense2_camera with IMU and depth enabled
@@ -153,5 +159,19 @@ def generate_launch_description():
 
             ]  # end TimerAction actions
         ),  # end TimerAction
+
+
+TimerAction(
+    period=12.0,  # adjust delay as needed
+    actions=[
+        ExecuteProcess(
+            cmd=[
+                'ros2', 'lifecycle', 'set',
+                '/local_costmap/local_costmap', 'activate'
+            ],
+            output='screen',
+        )
+    ]
+),
 
     ])  # end LaunchDescription
