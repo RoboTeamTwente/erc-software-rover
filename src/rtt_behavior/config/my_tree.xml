@@ -10,7 +10,7 @@
           <Sequence>
             <Fallback>
               <IsNear entity="rover" target="object" distance="15"/>
-              <Approach entity="rover" target="object" speed="1.0" distance="5" angle="0"/>
+              <Approach theta="0.0"/>
             </Fallback>
 
             <Fallback>
@@ -28,7 +28,7 @@
                       <IsContainerOpen/>
                       <OpenContainer/>
                     </Fallback>
-                    <Approach entity="gripper" target="container" speed="0.5" distance="2" angle="0"/>
+                    <Approach theta="1.57"/>
                   </Sequence>
                 </Fallback>
               </Sequence>
@@ -48,7 +48,7 @@
                       <IsGripperOpen/>
                       <OpenGripper/>
                     </Fallback>
-                    <Approach entity="gripper" target="OUTSIDE" speed="0.8" distance="20" angle="0"/>
+                    <Approach theta="3.14"/>
                   </Sequence>
                 </Fallback>
                 <CloseContainer/>
@@ -75,7 +75,7 @@
             <IsGripperOpen/>
             <OpenGripper/>
           </Fallback>
-          <Approach entity="gripper" target="object" speed="0.2" distance="5" angle="90"/> 
+          <Approach theta="0.78"/> 
         </Sequence>
       </Fallback>
 

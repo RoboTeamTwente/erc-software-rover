@@ -5,23 +5,23 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# 1. Find the packages (Added ament_index_cpp here)
-find_package(ament_cmake REQUIRED)
-find_package(behaviortree_cpp REQUIRED)
-find_package(ament_index_cpp REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
+ament_auto_find_build_dependencies()
 
-# 2. Create the executable
-add_executable(bt_node src/ex.cpp src/main.cpp)
+ament_auto_add_executable(bt_node DIRECTORY src)
 
-# 3. Handle Dependencies (The clean way)
-# This handles the include directories AND the linking for you
-ament_target_dependencies(bt_node
-  behaviortree_cpp
-  ament_index_cpp
+# 1. Generate the interfaces
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "action/CollectTask.action"
+  "action/HardwareCommand.action"
+  DEPENDENCIES unique_identifier_msgs action_msgs
 )
 
-# 4. Install
-install(TARGETS bt_node DESTINATION lib/${PROJECT_NAME})
+# 4. CRITICAL: Link your custom actions to the executable
+# This allows #include "rtt_behavior/action/collect_task.hpp" to work
+rosidl_get_typesupport_target(CPP_TYPESUPPORT_TARGET "${PROJECT_NAME}" "rosidl_typesupport_cpp")
+target_link_libraries(bt_node "${CPP_TYPESUPPORT_TARGET}")
+
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 
-ament_package()
+ament_auto_package()
