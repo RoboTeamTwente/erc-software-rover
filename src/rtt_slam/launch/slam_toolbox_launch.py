@@ -8,13 +8,17 @@ import os
 
 def generate_launch_description():
 
+    slam_toolbox_config = PathJoinSubstitution(
+        [FindPackageShare("rtt_slam"), "config", "slam_toolbox.yaml"]
+    )
+
     slam_toolbox = IncludeLaunchDescription(
         PathJoinSubstitution(
             [FindPackageShare("slam_toolbox"), "launch", "online_async_launch.py"]
         ),
-        launch_arguments=[
-            ("base_frame", "camera_link"),
-        ],
+        launch_arguments={
+            "slam_params_file": slam_toolbox_config,
+        }.items(),
     )
 
     realsense_camera = IncludeLaunchDescription(
@@ -34,7 +38,9 @@ def generate_launch_description():
         name="imu_filter",
         parameters=[
             {
+                "publish_tf": False,
                 "use_mag": False,
+                "remove_gravity_vector": True,
             }
         ],
         remappings=[
@@ -45,6 +51,13 @@ def generate_launch_description():
     imu_to_tf = Node(
         package="rtt_imu_to_tf",
         executable="imu_to_tf",
+        parameters=[
+            {
+                "imu_frame": "camera_imu_optical_frame",
+                "base_frame": "camera_link",
+                "odom_frame": "odom",
+            }
+        ],
     )
 
     depthimage_to_laserscan = Node(
