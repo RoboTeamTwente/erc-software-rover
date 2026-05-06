@@ -20,6 +20,7 @@ launch:
         # scale the images down so the camera doesn't crash
         - name: rgb_camera.color_profile
           value: 424,240,30
+        # FIXME: these values are invalid, so rtabmap reverts to default on launch
         - name: depth_module.depth_profile
           value: 424,240,30
 
@@ -38,22 +39,26 @@ launch:
         - from: /imu/data_raw
           to: /camera/camera/imu
 
-  - include:
-      file: "$(find-pkg-share rtabmap_launch)/launch/rtabmap.launch.py"
-      arg:
-        # rtabmap saves the map on disk forever. this flag probaby removes it on launch.
-        - name: rtabmap_args
-          value: --delete_db_on_start
-        - name: rgb_topic
-          value: /camera/camera/color/image_raw
-        - name: depth_topic
-          value: /camera/camera/aligned_depth_to_color/image_raw
-        - name: camera_info_topic
-          value: /camera/camera/aligned_depth_to_color/camera_info
-        - name: wait_imu_to_init
-          value: 'True'
-        - name: imu_topic
-          value: /imu/data
+  - group:
+      - set_remap:
+          from: /rtabmap/map
+          to: /map
+      - include:
+          file: "$(find-pkg-share rtabmap_launch)/launch/rtabmap.launch.py"
+          arg:
+            # rtabmap saves the map on disk forever. this flag probaby removes it on launch.
+            - name: rtabmap_args
+              value: --delete_db_on_start
+            - name: rgb_topic
+              value: /camera/camera/color/image_raw
+            - name: depth_topic
+              value: /camera/camera/aligned_depth_to_color/image_raw
+            - name: camera_info_topic
+              value: /camera/camera/aligned_depth_to_color/camera_info
+            - name: wait_imu_to_init
+              value: 'True'
+            - name: imu_topic
+              value: /imu/data
 
   - include:
       file: "$(find-pkg-share nav2_bringup)/launch/navigation_launch.py"
