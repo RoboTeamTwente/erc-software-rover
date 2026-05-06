@@ -14,6 +14,9 @@ launch:
         # used by rtabmap; publishes to aligned_depth_to_color
         - name: align_depth.enable
           value: 'True'
+        # needed for STVL; publishes /camera/camera/depth/color/points
+        - name: pointcloud.enable
+          value: 'True'
         # scale the images down so the camera doesn't crash
         - name: rgb_camera.color_profile
           value: 424,240,30
@@ -31,8 +34,6 @@ launch:
         # disable the magnetometer we don't have
         - name: use_mag
           value: false
-        - name: remove_gravity_vector
-          value: true
       remap:
         - from: /imu/data_raw
           to: /camera/camera/imu
@@ -53,6 +54,12 @@ launch:
           value: 'True'
         - name: imu_topic
           value: /imu/data
+
+  - include:
+      file: "$(find-pkg-share nav2_bringup)/launch/navigation_launch.py"
+      arg:
+        - name: params_file
+          value: "$(find-pkg-share rtt_slam)/config/rtabmap_nav2_params.yaml"
 
   # just place the camera at (0, 0, 0) for now
   - node:
