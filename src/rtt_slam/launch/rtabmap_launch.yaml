@@ -14,6 +14,11 @@ launch:
         # used by rtabmap; publishes to aligned_depth_to_color
         - name: align_depth.enable
           value: 'True'
+        # scale the images down so the camera doesn't crash
+        - name: rgb_camera.color_profile
+          value: 424,240,30
+        - name: depth_module.depth_profile
+          value: 424,240,30
 
   - node:
       pkg: imu_filter_madgwick
