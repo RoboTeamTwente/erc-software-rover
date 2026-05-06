@@ -53,8 +53,10 @@ launch:
           value: 'True'
         - name: imu_topic
           value: /imu/data
-        - name: frame_id
-          value: camera_link
-        - name: localization
-          value: 'True'
 
+  # just place the camera at (0, 0, 0) for now
+  - node:
+      pkg: tf2_ros
+      exec: static_transform_publisher
+      name: static_tf_base_to_camera
+      args: '--frame-id base_link --child-frame-id camera_link'
