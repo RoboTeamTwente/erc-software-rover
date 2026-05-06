@@ -12,7 +12,7 @@ from launch_ros.substitutions import FindPackageShare
 
 
 nav2_params = PathJoinSubstitution(
-    [FindPackageShare("rtt_slam"), "config", "nav2_params.yaml"]
+    [FindPackageShare("rtt_slam"), "config", "old_rtabmap_nav2_params.yaml"]
 )
 
 new_params = PathJoinSubstitution(
