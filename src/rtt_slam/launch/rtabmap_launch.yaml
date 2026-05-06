@@ -3,12 +3,15 @@ launch:
   - include:
       file: "$(find-pkg-share realsense2_camera)/launch/rs_launch.py"
       arg:
+        # publish IMU data
         - name: enable_gyro
           value: 'True'
         - name: enable_accel
           value: 'True'
+          # publish gyro and accel in lockstep
         - name: unite_imu_method
           value: '2'
+        # used by rtabmap; publishes to aligned_depth_to_color
         - name: align_depth.enable
           value: 'True'
 
@@ -17,8 +20,10 @@ launch:
       exec: imu_filter_madgwick_node
       name: imu_filter
       param:
+        # don't publish the TF that's only used for debugging (it only shows rotation)
         - name: publish_tf
           value: false
+        # disable the magnetometer we don't have
         - name: use_mag
           value: false
         - name: remove_gravity_vector
