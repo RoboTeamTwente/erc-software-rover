@@ -40,8 +40,9 @@ launch:
   - include:
       file: "$(find-pkg-share rtabmap_launch)/launch/rtabmap.launch.py"
       arg:
-        # - name: rtabmap_args
-        #   value: --delete_db_on_start
+        # rtabmap saves the map on disk forever. this flag probaby removes it on launch.
+        - name: rtabmap_args
+          value: --delete_db_on_start
         - name: rgb_topic
           value: /camera/camera/color/image_raw
         - name: depth_topic
