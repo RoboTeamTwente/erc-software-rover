@@ -66,6 +66,16 @@ launch:
         - name: params_file
           value: "$(find-pkg-share rtt_slam)/config/rtabmap_nav2_params.yaml"
 
+  # convert voxel_grid to a type RViz2 can parse. Only used for debugging.
+  - node:
+      pkg: nav2_costmap_2d
+      exec: nav2_costmap_2d_markers
+      remap:
+        - from: voxel_grid
+          to: /local_costmap/voxel_grid
+        - from: visualization_marker
+          to: /local_costmap/voxel_grid_markers
+
   # just place the camera at (0, 0, 0) for now
   - node:
       pkg: tf2_ros
