@@ -20,8 +20,8 @@ local_costmap:
       stvl_layer:
         plugin: 'spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer'
         publish_voxel_map: true
-        observation_sources: pointcloud
-        pointcloud:
+        observation_sources: depth_cam
+        depth_cam:
           data_type: PointCloud2
           topic: /camera/camera/depth/color/points
           marking: true
