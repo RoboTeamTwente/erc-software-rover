@@ -30,10 +30,6 @@ local_costmap:
           model_type: 0 # depth cam
           inf_is_valid: true
 
-lifecycle_manager:
-  ros__parameters:
-    autostart: true
-
 controller_server:
   ros__parameters:
     controller_plugins: ["FollowPath"]
