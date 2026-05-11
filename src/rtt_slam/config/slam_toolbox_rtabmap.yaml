@@ -1,0 +1,18 @@
+# vi:sw=2:ts=2:et:
+
+slam_toolbox:
+  ros__parameters:
+    base_frame: base_link # AARGH
+    map_update_interval: 1.0
+    minimum_travel_distance: 0.05
+    enable_interactive_mode: true
+    # needs to be the same as depthimage's params
+    min_laser_range: 0.1
+    max_laser_range: 2.0
+
+
+/camera/camera/depth/depthimage_to_laserscan:
+    ros__parameters:
+      # needs to be the same as slam_toolbox's params
+      range_min: 0.1
+      range_max: 2.0

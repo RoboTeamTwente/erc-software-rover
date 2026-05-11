@@ -1,0 +1,108 @@
+# vi:sw=2:ts=2:et:
+
+launch:
+
+  - group:
+    - set_parameters_from_file:
+        filename: '$(find-pkg-share rtt_slam)/config/slam_toolbox_rtabmap.yaml'
+
+    # slam_toolbox
+    - group:
+      - set_remap:
+          from: /scan
+          to: /camera/camera/depth/scan
+      - include:
+          file: "$(find-pkg-share nav2_bringup)/launch/slam_launch.py"
+          arg:
+            - name: params_file
+              value: '$(find-pkg-share rtt_slam)/config/slam_toolbox_rtabmap.yaml'
+
+    # RealSense camera
+    - include:
+        file: '$(find-pkg-share realsense2_camera)/launch/rs_launch.py'
+        arg:
+          # publish IMU data
+          - name: enable_gyro
+            value: 'True'
+          - name: enable_accel
+            value: 'True'
+            # publish gyro and accel in lockstep
+          - name: unite_imu_method
+            value: '2'
+          # used by rtabmap; publishes to aligned_depth_to_color
+          - name: align_depth.enable
+            value: 'True'
+          # needed for STVL; publishes /camera/camera/depth/color/points
+          - name: pointcloud.enable
+            value: 'True'
+          # scale the images down so the camera doesn't crash
+          - name: rgb_camera.color_profile
+            value: 424,240,30
+          # FIXME: these values are invalid, so rtabmap reverts to default on launch
+          - name: depth_module.depth_profile
+            value: 424,240,30
+
+    # Madgwick IMU filter, gives us nice quaternions, required for RTABMAP
+    - node:
+        pkg: imu_filter_madgwick
+        exec: imu_filter_madgwick_node
+        name: imu_filter
+        param:
+          # don't publish the TF that's only used for debugging (it only shows rotation)
+          - name: publish_tf
+            value: false
+          # disable the magnetometer we don't have
+          - name: use_mag
+            value: false
+        remap:
+          - from: /imu/data_raw
+            to: /camera/camera/imu
+
+    # RTABMAP, used here for odometry
+    - group:
+      # used by slam_toolbox?
+      - set_remap:
+          from: /rtabmap/odom
+          to: /odom
+      - include:
+          file: '$(find-pkg-share rtabmap_launch)/launch/rtabmap.launch.py'
+          arg:
+            # rtabmap saves the map on disk forever. this flag removes it on launch.
+            - name: rtabmap_args
+              value: --delete_db_on_start
+            # wire it up to RealSense
+            - name: rgb_topic
+              value: /camera/camera/color/image_raw
+            - name: depth_topic
+              value: /camera/camera/aligned_depth_to_color/image_raw
+            - name: camera_info_topic
+              value: /camera/camera/aligned_depth_to_color/camera_info
+            # and to Madgwick
+            - name: imu_topic
+              value: /imu/data
+            # wait for Madgwick??? TODO: do we need this?
+            - name: wait_imu_to_init
+              value: 'True'
+            # disable map->odom tranform, let slam_toolbox do it instead
+            - name: publish_tf_map
+              value: 'False'
+
+    # Convert PointCloud from the depth cam to LaserScan (for slam_toolbox)
+    - node:
+        namespace: /camera/camera/depth
+        pkg: depthimage_to_laserscan
+        exec: depthimage_to_laserscan_node
+        remap:
+          - from: depth
+            to: image_rect_raw
+          - from: depth_camera_info
+            to: camera_info
+
+    # just place the camera at (0, 0, 0) for now
+    # TODO: properly set up TF2 tree
+    - node:
+        pkg: tf2_ros
+        exec: static_transform_publisher
+        name: static_tf_base_to_camera
+        args: '--frame-id base_link --child-frame-id camera_link'
+
