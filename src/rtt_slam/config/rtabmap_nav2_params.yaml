@@ -38,3 +38,12 @@ controller_server:
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       critics: ['GoalDist'] # sybau bro, here's your critic
+
+amcl:
+  ros__parameters:
+    base_frame_id: base_link
+    scan_topic: /camera/camera/depth/scan
+
+map_server:
+  ros__parameters:
+    yaml_filename: bogus_value_that_launch_file_overrides # hopefully

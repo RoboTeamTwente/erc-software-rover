@@ -40,9 +40,10 @@ launch:
           to: /camera/camera/imu
 
   - group:
-      - set_remap:
-          from: /rtabmap/map
-          to: /map
+    # don't remap it here, now map_server publishes the map
+        # - set_remap:
+        #    from: /rtabmap/map
+        #    to: /map
       - include:
           file: '$(find-pkg-share rtabmap_launch)/launch/rtabmap.launch.py'
           arg:
@@ -59,12 +60,17 @@ launch:
               value: 'True'
             - name: imu_topic
               value: /imu/data
+            # disable map->odom tranform, let AMCL do it instead
+            - name: publish_tf_map
+              value: 'False'
 
   - include:
-      file: "$(find-pkg-share nav2_bringup)/launch/navigation_launch.py"
+      file: "$(find-pkg-share nav2_bringup)/launch/bringup_launch.py"
       arg:
         - name: params_file
           value: '$(find-pkg-share rtt_slam)/config/rtabmap_nav2_params.yaml'
+        - name: map
+          value: 'map.yaml'
 
   # convert voxel_grid to a type RViz2 can parse. Only used for debugging.
   - node:
@@ -82,3 +88,18 @@ launch:
       exec: static_transform_publisher
       name: static_tf_base_to_camera
       args: '--frame-id base_link --child-frame-id camera_link'
+
+  # Convert PointCloud from the depth cam to LaserScan (for AMCL)
+  - node:
+      namespace: /camera/camera/depth
+      pkg: depthimage_to_laserscan
+      exec: depthimage_to_laserscan_node
+      remap:
+        - from: depth
+          to: image_rect_raw
+        - from: depth_camera_info
+          to: camera_info
+      param:
+        - name: range_max
+          value: 3.
+
