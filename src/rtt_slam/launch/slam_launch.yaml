@@ -4,7 +4,7 @@ launch:
 
   # apply this config to all nodes launched from this file
   - set_parameters_from_file:
-      filename: '$(find-pkg-share rtt_slam)/config/slam_toolbox_rtabmap.yaml'
+      filename: '$(find-pkg-share rtt_slam)/config/slam.yaml'
 
   # camera
   - include:
@@ -20,7 +20,7 @@ launch:
         arg:
           # referencing the same config again, because the launch file requires it
           - name: params_file
-            value: '$(find-pkg-share rtt_slam)/config/slam_toolbox_rtabmap.yaml'
+            value: '$(find-pkg-share rtt_slam)/config/slam.yaml'
 
   # RTABMAP, used here for odometry
   - group:
