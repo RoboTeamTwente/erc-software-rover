@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>bt_example</name>
+  <name>rtt_behaviour</name>
   <version>1.0.0</version>
-  <description>Gripper Behavior</description>
+  <description>RoboTeam-specific behaviour</description>
   <maintainer email="lmao@gmail.com">risame</maintainer>
   <license>Apache-2.0</license>
 
