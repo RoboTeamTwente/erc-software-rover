@@ -6,6 +6,10 @@ launch:
   - set_parameters_from_file:
       filename: '$(find-pkg-share rtt_slam)/config/slam_toolbox_rtabmap.yaml'
 
+  # camera
+  - include:
+      file: '$(find-pkg-share rtt_slam)/launch/camera_launch.yaml'
+
   # slam_toolbox
   - group:
     - set_remap:
@@ -14,48 +18,9 @@ launch:
     - include:
         file: "$(find-pkg-share nav2_bringup)/launch/slam_launch.py"
         arg:
+          # referencing the same config again, because the launch file requires it
           - name: params_file
             value: '$(find-pkg-share rtt_slam)/config/slam_toolbox_rtabmap.yaml'
-
-  # RealSense camera
-  - include:
-      file: '$(find-pkg-share realsense2_camera)/launch/rs_launch.py'
-      arg:
-        # publish IMU data
-        - name: enable_gyro
-          value: 'True'
-        - name: enable_accel
-          value: 'True'
-          # publish gyro and accel in lockstep
-        - name: unite_imu_method
-          value: '2'
-        # used by rtabmap; publishes to aligned_depth_to_color
-        - name: align_depth.enable
-          value: 'True'
-        # needed for STVL; publishes /camera/camera/depth/color/points
-        - name: pointcloud.enable
-          value: 'True'
-        # scale the images down so the camera doesn't crash
-        - name: rgb_camera.color_profile
-          value: 424,240,30
-        - name: depth_module.depth_profile
-          value: 424,240,30
-
-  # Madgwick IMU filter, gives us nice quaternions, required for RTABMAP
-  - node:
-      pkg: imu_filter_madgwick
-      exec: imu_filter_madgwick_node
-      name: imu_filter
-      param:
-        # don't publish the TF that's only used for debugging (it only shows rotation)
-        - name: publish_tf
-          value: false
-        # disable the magnetometer we don't have
-        - name: use_mag
-          value: false
-      remap:
-        - from: /imu/data_raw
-          to: /camera/camera/imu
 
   # RTABMAP, used here for odometry
   - group:
@@ -85,17 +50,6 @@ launch:
           # disable map->odom tranform, let slam_toolbox do it instead
           - name: publish_tf_map
             value: 'False'
-
-  # Convert PointCloud from the depth cam to LaserScan (for slam_toolbox)
-  - node:
-      namespace: /camera/camera/depth
-      pkg: depthimage_to_laserscan
-      exec: depthimage_to_laserscan_node
-      remap:
-        - from: depth
-          to: image_rect_raw
-        - from: depth_camera_info
-          to: camera_info
 
   # just place the camera at (0, 0, 0) for now
   # TODO: properly set up TF2 tree
