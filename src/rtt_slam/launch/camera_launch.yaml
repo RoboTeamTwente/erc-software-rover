@@ -1,0 +1,40 @@
+# vi:sw=2:ts=2:et:
+
+launch:
+
+  # apply this config to all nodes launched from this file
+  - set_parameters_from_file:
+      filename: '$(find-pkg-share rtt_slam)/config/camera.yaml'
+
+  # RealSense camera
+  - include:
+      file: '$(find-pkg-share realsense2_camera)/launch/rs_launch.py'
+      arg:
+        - name: config_file
+          value: '$(find-pkg-share rtt_slam)/config/camera_realsense.yaml'
+
+  # Madgwick IMU filter, gives us nice quaternions, required for RTABMAP
+  # publishes to /imu/data
+  - node:
+      pkg: imu_filter_madgwick
+      exec: imu_filter_madgwick_node
+
+      # connect it to the realsense2_camera
+      remap:
+        - from: /imu/data_raw
+          to: /camera/camera/imu
+
+  # Convert PointCloud from the depth cam to LaserScan (for slam_toolbox)
+  # publishes to /camera/camera/depth/scan
+  - node:
+      pkg: depthimage_to_laserscan
+      exec: depthimage_to_laserscan_node
+
+      # connect it to the realsense2_camera
+      remap:
+        - from: depth
+          to: /camera/camera/depth/image_rect_raw
+        - from: depth_camera_info
+          to: /camera/camera/depth/camera_info
+        - from: scan
+          to: /camera/camera/depth/scan
