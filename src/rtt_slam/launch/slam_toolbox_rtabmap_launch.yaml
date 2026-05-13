@@ -38,7 +38,6 @@ launch:
           # scale the images down so the camera doesn't crash
           - name: rgb_camera.color_profile
             value: 424,240,30
-          # FIXME: these values are invalid, so rtabmap reverts to default on launch
           - name: depth_module.depth_profile
             value: 424,240,30
 
