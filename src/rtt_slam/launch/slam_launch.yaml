@@ -50,12 +50,3 @@ launch:
           # disable map->odom tranform, let slam_toolbox do it instead
           - name: publish_tf_map
             value: 'False'
-
-  # just place the camera at (0, 0, 0) for now
-  # TODO: properly set up TF2 tree
-  - node:
-      pkg: tf2_ros
-      exec: static_transform_publisher
-      name: static_tf_base_to_camera
-      args: '--frame-id base_link --child-frame-id camera_link'
-
