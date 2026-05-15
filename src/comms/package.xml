@@ -18,6 +18,8 @@
   <depend>rclcpp</depend>
   <depend>ament_index_cpp</depend>
   <depend>std_msgs</depend>
+  <depend>rclcpp_action</depend>
+<depend>rtt_behaviour</depend>
 
   <member_of_group>rosidl_interface_packages</member_of_group>
 

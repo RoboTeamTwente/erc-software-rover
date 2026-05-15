@@ -15,6 +15,7 @@ ament_auto_find_build_dependencies()
 # Generate ROS 2 interfaces from msg/
 find_package(rosidl_default_generators REQUIRED)
 
+
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/SensorState.msg"
   "msg/ImuSensorInformation.msg"
@@ -32,7 +33,7 @@ include(FetchContent)
 FetchContent_Declare(
   erc_protobufs
   GIT_REPOSITORY https://github.com/RoboTeamTwente/ERC-Protobufs.git
-  GIT_TAG 761315150367bc9c7d4f5b5ecb513344dba51110
+  GIT_TAG a303ae35c83973fdc1a34cd5615dde38fcb5cb44
 )
 FetchContent_MakeAvailable(erc_protobufs)
 

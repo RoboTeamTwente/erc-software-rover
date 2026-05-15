@@ -6,35 +6,23 @@ const int MIN_DISTANCE = 5;
 
 namespace MyRobotNodes {
 
-Approach::Approach(const std::string &name, const BT::NodeConfig &config)
-    : BT::StatefulActionNode(name, config) {}
-
-BT::NodeStatus Approach::onStart() {
-    std::string entity, target;
-    double speed = 0.0;
-    int angle = 0;
-
-    getInput("entity", entity);
-    getInput("target", target);
-    getInput("speed", speed);
-    getInput("angle", angle);
-    if (!getInput<int>("distance", _distance)) _distance = 10;
-
-    std::cout << "[ Approach ] " << entity << " moving to " << target
-              << " at speed " << speed << ". Dist: " << _distance << "m."
-              << std::endl;
-    return BT::NodeStatus::RUNNING;
+bool Approach::setGoal(BaseClass::Goal& goal) {
+    float angle = 0;
+    if (!getInput<float>("theta", angle)) return false;
+    goal.theta = angle;
+    return true;
 }
 
-BT::NodeStatus Approach::onRunning() {
-    _distance--;
-    std::cout << "[ Approach ] Moving... " << _distance << " centimeters left."
-              << std::endl;
-
-    return (_distance <= 0) ? BT::NodeStatus::SUCCESS : BT::NodeStatus::RUNNING;
+BT::NodeStatus Approach::onResultReceived(const BaseClass::WrappedResult& wr) {
+    if (wr.code == rclcpp_action::ResultCode::SUCCEEDED) {
+        return BT::NodeStatus::SUCCESS;
+    }
+    return BT::NodeStatus::FAILURE;
 }
 
-void Approach::onHalted() { std::cout << "[ Approach ] HALTED!" << std::endl; }
+void Approach::onHalt() {
+    // Logic for when the BT stops the action mid-way
+}
 
 BT::NodeStatus IsNear::tick() {
     std::string entity, target;
