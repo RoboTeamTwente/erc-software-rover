@@ -9,3 +9,8 @@
     ros__parameters: {}
       # subscribe_depth: true
       # subscribe_odom_info: true
+
+  imu_filter_madgwick:
+    ros__parameters:
+      use_mag: false # we don't have a magnetometer
+      publish_tf: false # do not publish a map->odom frame that only contains rotation
