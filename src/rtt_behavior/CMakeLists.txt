@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(rtt_behaviour)
+project(rtt_behavior)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -14,11 +14,12 @@ find_package(turtlesim REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(unique_identifier_msgs REQUIRED)
 find_package(action_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
 # 1. Generate the interfaces
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "actions/CollectTask.action"
-  "actions/HardwareCommand.action"
+  "action/CollectTask.action"
+  "action/HardwareCommand.action"
   DEPENDENCIES unique_identifier_msgs action_msgs
 )
 

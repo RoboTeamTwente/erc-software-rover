@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>rtt_behaviour</name>
+  <name>rtt_behavior</name>
   <version>1.0.0</version>
   <description>Gripper Behavior</description>
   <maintainer email="lmao@gmail.com">risame</maintainer>
