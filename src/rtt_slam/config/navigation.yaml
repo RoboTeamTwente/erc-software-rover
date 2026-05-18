@@ -3,27 +3,15 @@ global_costmap:
     ros__parameters:
       publish_frequency: 2.
       update_frequency: 5.
-      # STVL never resizes the costmap, so let's make it big
-      origin_x: -10.
-      origin_y: -10.
-      width: 20
-      height: 20
       plugins:
-        - stvl_layer
-      stvl_layer:
-        plugin: 'nav2_costmap_2d::VoxelLayer'
-        publish_voxel_map: true
-        origin_z: -1.
-        z_resolution: 0.2 # height of one voxel, in meters
-        z_voxels: 16 # height of the map, in voxels
-        observation_sources: depth_cam
-        depth_cam:
-          data_type: PointCloud2
-          topic: /camera/camera/depth/color/points
-          expected_update_rate: 30. # scream if the topic goes silent
-          marking: true
-          clearing: true
-          max_obstacle_height: 3.
+        - static_layer
+        - inflation_layer
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_topic: /rtabmap/map
+        subscribe_to_updates: true
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
 
 local_costmap:
   local_costmap:
@@ -32,10 +20,11 @@ local_costmap:
       update_frequency: 5.
       rolling_window: true
       plugins:
-        - stvl_layer
-      stvl_layer:
+        - voxel_layer
+        - inflation_layer
+      voxel_layer:
         plugin: 'nav2_costmap_2d::VoxelLayer'
-        publish_voxel_map: true
+        publish_voxel_map: true # XXX: for debugging only
         origin_z: -1.
         z_resolution: 0.2 # height of one voxel, in meters
         z_voxels: 16 # height of the map, in voxels
@@ -47,6 +36,8 @@ local_costmap:
           marking: true
           clearing: true
           max_obstacle_height: 3.
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
 
 controller_server:
   ros__parameters:

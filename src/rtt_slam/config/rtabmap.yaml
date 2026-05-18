@@ -7,8 +7,6 @@
 
   rtabmap:
     ros__parameters: {}
-      # subscribe_depth: true
-      # subscribe_odom_info: true
 
   imu_filter_madgwick:
     ros__parameters:
