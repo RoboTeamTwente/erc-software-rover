@@ -16,14 +16,4 @@ launch:
 
   # Nav2
   - include:
-      file: "$(find-pkg-share nav2_bringup)/launch/navigation_launch.py"
-      arg:
-        # referencing the same config again, because the launch file requires it
-        - name: params_file
-          value: '$(find-pkg-share rtt_slam)/config/slam.yaml'
-
-  # VoxelGrid to Markers
-  - node:
-      pkg: nav2_costmap_2d
-      exec: nav2_costmap_2d_markers
-      namespace: local_costmap
+      file: '$(find-pkg-share rtt_slam)/launch/navigation_launch.yaml'
