@@ -2,10 +2,6 @@
 
 launch:
 
-  # apply this config to all nodes launched from this file
-  - set_parameters_from_file:
-      filename: '$(find-pkg-share rtt_slam)/config/slam.yaml'
-
   # camera
   - include:
       file: '$(find-pkg-share rtt_slam)/launch/camera_launch.yaml'
