@@ -5,16 +5,10 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-find_package(ament_cmake REQUIRED)
-find_package(behaviortree_cpp REQUIRED)
-find_package(ament_index_cpp REQUIRED)
-find_package(behaviortree_ros2 REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(turtlesim REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(unique_identifier_msgs REQUIRED)
-find_package(action_msgs REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
+ament_auto_find_build_dependencies()
+
+ament_auto_add_executable(bt_node DIRECTORY src)
 
 # 1. Generate the interfaces
 rosidl_generate_interfaces(${PROJECT_NAME}
@@ -23,26 +17,11 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   DEPENDENCIES unique_identifier_msgs action_msgs
 )
 
-# 2. Create the executable
-add_executable(bt_node src/ex.cpp src/main.cpp)
-
-# 3. Handle External Dependencies
-ament_target_dependencies(bt_node
-  behaviortree_cpp
-  ament_index_cpp
-  behaviortree_ros2
-  std_msgs
-  rclcpp
-  turtlesim
-)
-
 # 4. CRITICAL: Link your custom actions to the executable
 # This allows #include "rtt_behavior/action/collect_task.hpp" to work
-rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
-target_link_libraries(bt_node "${cpp_typesupport_target}")
+rosidl_get_typesupport_target(CPP_TYPESUPPORT_TARGET "${PROJECT_NAME}" "rosidl_typesupport_cpp")
+target_link_libraries(bt_node "${CPP_TYPESUPPORT_TARGET}")
 
-# 5. Install
-install(TARGETS bt_node DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 
-ament_package()
+ament_auto_package()
