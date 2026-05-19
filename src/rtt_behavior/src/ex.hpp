@@ -7,9 +7,10 @@
 #include "rclcpp_action/rclcpp_action.hpp" // Added this
 #include "behaviortree_ros2/bt_action_node.hpp"
 #include "turtlesim/action/rotate_absolute.hpp"
+#include "rtt_behavior/action/hardware_command.hpp"
 
 namespace MyRobotNodes {
-using RotateAbsolute = turtlesim::action::RotateAbsolute;
+using HardwareCommand = rtt_behavior::action::HardwareCommand;
     
 inline bool gripperOpen = true;
 inline bool containerOpen = false;
@@ -104,10 +105,10 @@ class IsNear : public BT::ConditionNode {
     int _distance;
 };
 
-class Approach : public BT::RosActionNode<RotateAbsolute> {
+class Approach : public BT::RosActionNode<HardwareCommand> {
 public:
     // Use the base class alias to simplify the override signatures
-    using BaseClass = BT::RosActionNode<RotateAbsolute>;
+    using BaseClass = BT::RosActionNode<HardwareCommand>;
 
     Approach(const std::string& name, 
              const BT::NodeConfig& config, 

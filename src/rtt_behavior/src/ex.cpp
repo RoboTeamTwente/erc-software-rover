@@ -7,22 +7,36 @@ const int MIN_DISTANCE = 5;
 namespace MyRobotNodes {
 
 bool Approach::setGoal(BaseClass::Goal& goal) {
-    float angle = 0;
-    if (!getInput<float>("theta", angle)) return false;
-    goal.theta = angle;
-    return true;
+    float target_theta = 0.0;
+    
+    // Read the angle from the Behavior Tree XML port
+    if (!getInput<float>("theta", target_theta)) {
+        return false; // Abort if the XML didn't provide a theta
+    }
+
+    // Fill out your exact action fields!
+    goal.command_type = "approach";   // Tells COMMS node what to do
+    goal.param_float   = target_theta; // Tells COMMS node the angle
+    goal.param_string  = "";           // Not used for this command
+
+    return true; // Send it over the network!
 }
 
+// STEP 2: Read the result form coming back from the COMMS node
 BT::NodeStatus Approach::onResultReceived(const BaseClass::WrappedResult& wr) {
-    if (wr.code == rclcpp_action::ResultCode::SUCCEEDED) {
+    // Did the network call succeed, AND did the COMMS node mark success=true?
+    if (wr.code == rclcpp_action::ResultCode::SUCCEEDED && wr.result->success) {
         return BT::NodeStatus::SUCCESS;
     }
+    
     return BT::NodeStatus::FAILURE;
 }
 
+// STEP 3: Handle interruptions
 void Approach::onHalt() {
-    // Logic for when the BT stops the action mid-way
+    BaseClass::onHalt(); // Tells COMMS node to stop moving immediately
 }
+
 
 BT::NodeStatus IsNear::tick() {
     std::string entity, target;
