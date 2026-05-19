@@ -1,0 +1,17 @@
+# publish IMU data
+enable_gyro: true
+enable_accel: true
+
+# publish gyro and accel in lockstep
+unite_imu_method: 2 # linear interpolation
+
+# used by rtabmap; publishes to aligned_depth_to_color
+align_depth.enable: true
+
+# needed for STVL; publishes /camera/camera/depth/color/points
+pointcloud.enable: true
+
+# scale the images down so the camera doesn't crash
+rgb_camera.color_profile: 424,240,30
+depth_module.depth_profile: 424,240,30
+

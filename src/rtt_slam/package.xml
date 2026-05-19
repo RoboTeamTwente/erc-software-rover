@@ -12,10 +12,15 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
+  <depend>depthimage_to_laserscan</depend>
+  <depend>gst_bridge</depend>
+  <depend>imu_tools</depend>
   <depend>nav2_bringup</depend>
   <depend>nav2_costmap_2d</depend>
   <depend>realsense2_camera</depend>
   <depend>rtabmap_launch</depend>
+  <depend>rtt_imu_to_tf</depend>
+  <depend>slam_toolbox</depend>
   <depend>spatio_temporal_voxel_layer</depend>
   <depend>tf2_ros</depend>
 

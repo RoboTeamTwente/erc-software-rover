@@ -14,7 +14,10 @@ sudo dpkg -i /tmp/ros2-apt-source.deb
 
 # install ROS2
 sudo apt update
-sudo apt install ros-humble-desktop
+sudo apt install ros-dev-tools ros-humble-desktop
+
+# activate ROS2
+source /opt/ros/humble/setup.bash
 
 # install colcon mixins
 colcon mixin add default https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml
@@ -24,7 +27,14 @@ colcon mixin update default
 sudo rosdep init
 ```
 
-3. Build this project:
+3. Clone this repo, with submodules:
+
+```bash
+git clone https://github.com/RoboTeamTwente/erc-software-rover
+git submodule update --init --recursive
+```
+
+4. Build this project:
 
 ```bash
 # activate ROS2
@@ -36,8 +46,6 @@ rosdep install --from-paths --ignore-src --default-yes src
 
 # librealsense2 must be built with different CMake options
 colcon build --packages-select librealsense2 --cmake-args \
-  -DBUILD_WITH_CUDA=ON                                    \
-  -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc          \
   -DCHECK_FOR_UPDATES=OFF                                 \
   -DFORCE_RSUSB_BACKEND=ON
 
@@ -48,7 +56,7 @@ colcon build
 source install/local_setup.bash
 ```
 
-4. Launch the simulation:
+5. Launch the simulation:
 
 ```bash
 # activate ROS2

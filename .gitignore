@@ -16,3 +16,7 @@ log/
 # webots
 *.wbproj
 src/*/assets/worlds/*.jpg
+
+# SLAM
+frames_*.gv
+frames_*.pdf

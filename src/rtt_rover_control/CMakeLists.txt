@@ -8,7 +8,7 @@ endif()
 include(FetchContent)
 FetchContent_Declare(
   erc_control_steering
-  GIT_REPOSITORY ssh://git@github.com/RoboTeamTwente/erc-control-steering
+  GIT_REPOSITORY https://github.com/RoboTeamTwente/erc-control-steering
   GIT_TAG 4cb1d60f13cdb50bc48b3fecc6efb08686de73ee)
 
 FetchContent_MakeAvailable(erc_control_steering)

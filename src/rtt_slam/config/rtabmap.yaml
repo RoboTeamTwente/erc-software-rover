@@ -1,0 +1,14 @@
+/rtabmap:
+  rgbd_odometry:
+    ros__parameters:
+      # assume that the rover is stationary,
+      # use the first IMU sample to set initial pose
+      wait_imu_to_init: true
+
+  rtabmap:
+    ros__parameters: {}
+
+  imu_filter_madgwick:
+    ros__parameters:
+      use_mag: false # we don't have a magnetometer
+      publish_tf: false # do not publish a map->odom frame that only contains rotation

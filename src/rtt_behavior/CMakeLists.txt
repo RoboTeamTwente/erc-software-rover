@@ -37,7 +37,7 @@ ament_target_dependencies(bt_node
 )
 
 # 4. CRITICAL: Link your custom actions to the executable
-# This allows #include "rtt_behaviour/action/collect_task.hpp" to work
+# This allows #include "rtt_behavior/action/collect_task.hpp" to work
 rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
 target_link_libraries(bt_node "${cpp_typesupport_target}")
 

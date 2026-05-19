@@ -1,0 +1,15 @@
+# vi:sw=2:ts=2:et:
+
+launch:
+
+  # camera
+  - include:
+      file: '$(find-pkg-share rtt_slam)/launch/camera_launch.yaml'
+
+  # RTABMAP
+  - include:
+      file: '$(find-pkg-share rtt_slam)/launch/rtabmap_launch.yaml'
+
+  # Nav2
+  - include:
+      file: '$(find-pkg-share rtt_slam)/launch/navigation_launch.yaml'
