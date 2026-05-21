@@ -2,14 +2,14 @@
 
 launch:
   - group:
-
       - arg:
           name: rtabmap_viz
-          default: 'false'
+          description: set to true to launch rtabmap_viz
+          default: "false"
 
       # apply this config to all nodes launched from this file
       - set_parameters_from_file:
-          filename: '$(find-pkg-share rtt_slam)/config/rtabmap.yaml'
+          filename: "$(find-pkg-share rtt_slam)/config/rtabmap.yaml"
 
       - push_ros_namespace:
           namespace: rtabmap
@@ -40,7 +40,7 @@ launch:
       - node:
           pkg: rtabmap_viz
           exec: rtabmap_viz
-          if: '$(var rtabmap_viz)'
+          if: "$(var rtabmap_viz)"
 
       # Madgwick IMU filter, gives us nice quaternions, required for RTABMAP
       - node:
@@ -59,4 +59,4 @@ launch:
           pkg: tf2_ros
           exec: static_transform_publisher
           name: static_tf_base_to_camera
-          args: '--frame-id base_link --child-frame-id camera_link'
+          args: "--frame-id base_link --child-frame-id camera_link"
