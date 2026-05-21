@@ -1,0 +1,42 @@
+session_name: main
+start_directory: /root/erc-software-rover
+windows:
+
+  - shell_command_before:
+      - . install/local_setup.bash
+    panes:
+    - hx
+
+  - shell_command_before:
+      - . install/local_setup.bash
+    panes:
+    - colcon build --continue-on-error
+
+  - shell_command_before:
+      - . install/local_setup.bash
+    # panes:
+    # - ros2 launch rtt_slam camera_launch.yaml
+    window_name: camera
+
+  - shell_command_before:
+      - . install/local_setup.bash
+    # panes:
+    # - ros2 launch rtt_slam rtabmap_launch.yaml
+    window_name: rtabmap
+
+  - shell_command_before:
+      - . install/local_setup.bash
+    # panes:
+    # - ros2 launch rtt_slam navigation_launch.yaml
+    window_name: navigation
+
+  - shell_command_before:
+      - . install/local_setup.bash
+    panes:
+    - rqt
+    window_name: rqt
+
+  - shell_command_before:
+      - . install/local_setup.bash
+    panes:
+    - rviz2
