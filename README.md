@@ -20,6 +20,10 @@ sudo docker build . -t erc-software-rover
 # Run this in a separate terminal. If all is correct, it will stay silent forever.
 sudo docker run --rm --name erc-software-rover --net=host -v $(pwd):/ws --privileged -e DISPLAY -v /tmp:/tmp -v /run:/run -v /dev:/dev erc-software-rover
 
+# Allow opening windows from inside the container
+# Run this every time you log into your computer
+xhost local:root
+
 # In a new terminal, to launch a new shell:
 sudo docker exec -it erc-software-rover bash
 source /opt/ros/humble/setup.bash
