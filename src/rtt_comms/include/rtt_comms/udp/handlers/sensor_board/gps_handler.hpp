@@ -1,8 +1,8 @@
 #pragma once
 
-#include "comms/udp/handler.hpp"
+#include "rtt_comms/udp/handler.hpp"
 #include <rclcpp/rclcpp.hpp>
-#include "comms/msg/sensor_board_gps_info.hpp"
+#include "rtt_comms/msg/sensor_board_gps_info.hpp"
 
 class GpsHandler : public Handler {
 public:
@@ -14,5 +14,5 @@ public:
 
 private:
   rclcpp::Node* node_;
-  rclcpp::Publisher<comms::msg::SensorBoardGPSInfo>::SharedPtr pub_;
+  rclcpp::Publisher<rtt_comms::msg::SensorBoardGPSInfo>::SharedPtr pub_;
 };

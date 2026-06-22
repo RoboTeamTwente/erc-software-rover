@@ -18,8 +18,8 @@ UdpForwarderNode (:5000)
     │
     └── Parse PBEnvelope
             │
-            ├── payload_case = kImuInfo ──► ImuHandler ──► /imu_data  [comms/ImuSensorInformation]
-            └── payload_case = kGpsInfo ──► GpsHandler ──► /gps_data  [comms/SensorBoardGPSInfo]
+            ├── payload_case = kImuInfo ──► ImuHandler ──► /imu_data  [rtt_comms/ImuSensorInformation]
+            └── payload_case = kGpsInfo ──► GpsHandler ──► /gps_data  [rtt_comms/SensorBoardGPSInfo]
 ```
 
 ---
@@ -57,15 +57,15 @@ The `oneof` makes the datagram self-describing — `payload_case()` identifies t
 
 | Topic      | Message Type                    | Description              |
 |------------|---------------------------------|--------------------------|
-| `/imu_data`| `comms/ImuSensorInformation`    | IMU accel, gyro, mag     |
-| `/gps_data`| `comms/SensorBoardGPSInfo`      | GPS coordinates, fix info|
+| `/imu_data`| `rtt_comms/ImuSensorInformation`    | IMU accel, gyro, mag     |
+| `/gps_data`| `rtt_comms/SensorBoardGPSInfo`      | GPS coordinates, fix info|
 
 ---
 
 ## Adding a New Handler
 
 1. Add a ROS message in `msg/MyMessage.msg` and register it in `CMakeLists.txt` under `rosidl_generate_interfaces`.
-2. Create `include/comms/udp/handlers/my_handler.hpp` (declaration) and `src/handlers/my_handler.cpp` (implementation). Follow the pattern of `ImuHandler` / `GpsHandler`.
+2. Create `include/rtt_comms/udp/handlers/my_handler.hpp` (declaration) and `src/handlers/my_handler.cpp` (implementation). Follow the pattern of `ImuHandler` / `GpsHandler`.
 3. Add `src/handlers/my_handler.cpp` to `comms_node` sources in `CMakeLists.txt`.
 4. Include the handler in `udp_forwarder_node.cpp` and register it:
    ```cpp
@@ -79,12 +79,12 @@ The `oneof` makes the datagram self-describing — `payload_case()` identifies t
 ## Building
 
 ```bash
-colcon build --symlink-install --packages-select comms
+colcon build --symlink-install --packages-select rtt_comms
 source install/setup.bash
 ```
 
 > **Note:** Protobufs are fetched automatically from [ERC-Protobufs](https://github.com/RoboTeamTwente/ERC-Protobufs) via CMake `FetchContent` on first build.
-> If you update `GIT_TAG`, delete `build/comms/_deps/erc_protobufs-*` to force a clean re-fetch.
+> If you update `GIT_TAG`, delete `build/rtt_comms/_deps/erc_protobufs-*` to force a clean re-fetch.
 
 ---
 
@@ -92,16 +92,16 @@ source install/setup.bash
 
 **Start the node:**
 ```bash
-ros2 run comms comms_node
+ros2 run rtt_comms comms_node
 ```
 
 **Test with the UDP client** (sends a single test datagram to `:5000`):
 ```bash
 # Send an IMU envelope (default)
-ros2 run comms udp_client 127.0.0.1 0 imu
+ros2 run rtt_comms udp_client 127.0.0.1 0 imu
 
 # Send a GPS envelope
-ros2 run comms udp_client 127.0.0.1 0 gps
+ros2 run rtt_comms udp_client 127.0.0.1 0 gps
 ```
 
 Client argument order: `<server_ip> <local_port (0 = any)> <payload_type>`
@@ -117,13 +117,13 @@ ros2 topic echo /gps_data
 ## File Structure
 
 ```
-comms/
+rtt_comms/
 ├── assets/
 │   ├── udp_client.cpp              # Test client — sends a single PBEnvelope over UDP
 │   └── test_payloads/
 │       ├── imu_payload.hpp/.cpp    # Factory: builds a test IMU PBEnvelope
 │       └── gps_payload.hpp/.cpp    # Factory: builds a test GPS PBEnvelope
-├── include/comms/udp/
+├── include/rtt_comms/udp/
 │   ├── handler.hpp                 # Abstract Handler base class
 │   ├── utils.hpp                   # Shared utilities (clamp_u8)
 │   └── handlers/

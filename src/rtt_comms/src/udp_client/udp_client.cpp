@@ -7,10 +7,10 @@
 #include <iostream>
 #include <string>
 
-#include "comms/udp_client/imu_payload.hpp"
-#include "comms/udp_client/gps_payload.hpp"
-#include "comms/udp_client/ph_payload.hpp"
-#include "comms/udp_client/diagnostics_payload.hpp"
+#include "rtt_comms/udp_client/imu_payload.hpp"
+#include "rtt_comms/udp_client/gps_payload.hpp"
+#include "rtt_comms/udp_client/ph_payload.hpp"
+#include "rtt_comms/udp_client/diagnostics_payload.hpp"
 
 static PBEnvelope build_envelope(const std::string& type) {
   if (type == "gps")         return make_gps_envelope();

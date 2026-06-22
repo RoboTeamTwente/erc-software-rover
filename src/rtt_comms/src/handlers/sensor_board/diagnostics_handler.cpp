@@ -1,5 +1,5 @@
-#include "comms/udp/handlers/sensor_board/diagnostics_handler.hpp"
-#include "comms/udp/utils.hpp"
+#include "rtt_comms/udp/handlers/sensor_board/diagnostics_handler.hpp"
+#include "rtt_comms/udp/utils.hpp"
 
 #include "components/sensor_board/diagnostics.pb.h"
 #include "components/sensor_board/imu_sensor.pb.h"
@@ -11,7 +11,7 @@ DiagnosticsHandler::DiagnosticsHandler(rclcpp::Node* node,
                                        std::size_t queue_size)
 : node_(node)
 {
-  pub_ = node_->create_publisher<comms::msg::SensorBoardDiagnostics>(topic, queue_size);
+  pub_ = node_->create_publisher<rtt_comms::msg::SensorBoardDiagnostics>(topic, queue_size);
 }
 
 void DiagnosticsHandler::handle(const PBEnvelope& envelope) {
@@ -19,8 +19,8 @@ void DiagnosticsHandler::handle(const PBEnvelope& envelope) {
 
   const SensorBoardDiagnostics& diag_pb = envelope.sensor_diag();
 
-  comms::msg::SensorBoardDiagnostics diag_ros;
-  diag_ros.state = comms::udp::clamp_u8(static_cast<int>(diag_pb.state()));
+  rtt_comms::msg::SensorBoardDiagnostics diag_ros;
+  diag_ros.state = rtt_comms::udp::clamp_u8(static_cast<int>(diag_pb.state()));
   diag_ros.board_temperature = diag_pb.board_temperature();
   diag_ros.board_voltage     = diag_pb.board_voltage();
 
@@ -36,8 +36,8 @@ void DiagnosticsHandler::handle(const PBEnvelope& envelope) {
   diag_ros.imu_sensor.mag_y        = imu.mag_y();
   diag_ros.imu_sensor.mag_z        = imu.mag_z();
   diag_ros.imu_sensor.is_calibrated = imu.is_calibrated();
-  diag_ros.imu_sensor.state.state  = comms::udp::clamp_u8(static_cast<int>(imu.state()));
-  diag_ros.imu_sensor.error_code   = comms::udp::clamp_u8(static_cast<int>(imu.error_code()));
+  diag_ros.imu_sensor.state.state  = rtt_comms::udp::clamp_u8(static_cast<int>(imu.state()));
+  diag_ros.imu_sensor.error_code   = rtt_comms::udp::clamp_u8(static_cast<int>(imu.error_code()));
 
   // GPS
   const SensorBoardGPSInfo& gps = diag_pb.gps_sensor_1();
@@ -49,9 +49,9 @@ void DiagnosticsHandler::handle(const PBEnvelope& envelope) {
   diag_ros.gps_sensor.hdop          = gps.hdop();
   diag_ros.gps_sensor.vdop          = gps.vdop();
   diag_ros.gps_sensor.satellites    = gps.satellites();
-  diag_ros.gps_sensor.fix_quality   = comms::udp::clamp_u8(static_cast<int>(gps.fix_quality()));
-  diag_ros.gps_sensor.state.state   = comms::udp::clamp_u8(static_cast<int>(gps.state()));
-  diag_ros.gps_sensor.error_code    = comms::udp::clamp_u8(static_cast<int>(gps.error_code()));
+  diag_ros.gps_sensor.fix_quality   = rtt_comms::udp::clamp_u8(static_cast<int>(gps.fix_quality()));
+  diag_ros.gps_sensor.state.state   = rtt_comms::udp::clamp_u8(static_cast<int>(gps.state()));
+  diag_ros.gps_sensor.error_code    = rtt_comms::udp::clamp_u8(static_cast<int>(gps.error_code()));
   diag_ros.gps_sensor.utc_timestamp = gps.utc_timestamp();
 
   // PH
@@ -59,8 +59,8 @@ void DiagnosticsHandler::handle(const PBEnvelope& envelope) {
   diag_ros.ph_sensor.ph_value    = ph.ph_value();
   diag_ros.ph_sensor.voltage     = ph.voltage();
   diag_ros.ph_sensor.temperature = ph.temperature();
-  diag_ros.ph_sensor.state.state = comms::udp::clamp_u8(static_cast<int>(ph.state()));
-  diag_ros.ph_sensor.error_code  = comms::udp::clamp_u8(static_cast<int>(ph.error_code()));
+  diag_ros.ph_sensor.state.state = rtt_comms::udp::clamp_u8(static_cast<int>(ph.state()));
+  diag_ros.ph_sensor.error_code  = rtt_comms::udp::clamp_u8(static_cast<int>(ph.error_code()));
 
   pub_->publish(diag_ros);
 }

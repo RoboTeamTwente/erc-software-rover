@@ -1,5 +1,5 @@
-#include "comms/udp/handlers/sensor_board/imu_handler.hpp"
-#include "comms/udp/utils.hpp"
+#include "rtt_comms/udp/handlers/sensor_board/imu_handler.hpp"
+#include "rtt_comms/udp/utils.hpp"
 
 #include "components/sensor_board/imu_sensor.pb.h"
 
@@ -8,7 +8,7 @@ ImuHandler::ImuHandler(rclcpp::Node* node,
                        std::size_t queue_size)
 : node_(node)
 {
-  pub_ = node_->create_publisher<comms::msg::ImuSensorInformation>(topic, queue_size);
+  pub_ = node_->create_publisher<rtt_comms::msg::ImuSensorInformation>(topic, queue_size);
 }
 
 void ImuHandler::handle(const PBEnvelope& envelope) {
@@ -16,7 +16,7 @@ void ImuHandler::handle(const PBEnvelope& envelope) {
 
   const SensorBoardIMUInfo& imu_pb = envelope.imu_info();
 
-  comms::msg::ImuSensorInformation imu_ros;
+  rtt_comms::msg::ImuSensorInformation imu_ros;
   imu_ros.accel_x = imu_pb.accel_x();
   imu_ros.accel_y = imu_pb.accel_y();
   imu_ros.accel_z = imu_pb.accel_z();
@@ -30,8 +30,8 @@ void ImuHandler::handle(const PBEnvelope& envelope) {
   imu_ros.mag_z = imu_pb.mag_z();
 
   imu_ros.is_calibrated  = imu_pb.is_calibrated();
-  imu_ros.state.state    = comms::udp::clamp_u8(static_cast<int>(imu_pb.state()));
-  imu_ros.error_code     = comms::udp::clamp_u8(static_cast<int>(imu_pb.error_code()));
+  imu_ros.state.state    = rtt_comms::udp::clamp_u8(static_cast<int>(imu_pb.state()));
+  imu_ros.error_code     = rtt_comms::udp::clamp_u8(static_cast<int>(imu_pb.error_code()));
 
   pub_->publish(imu_ros);
 }

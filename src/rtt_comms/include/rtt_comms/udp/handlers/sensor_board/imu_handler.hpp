@@ -1,8 +1,8 @@
 #pragma once
 
-#include "comms/udp/handler.hpp"
+#include "rtt_comms/udp/handler.hpp"
 #include <rclcpp/rclcpp.hpp>
-#include "comms/msg/imu_sensor_information.hpp"
+#include "rtt_comms/msg/imu_sensor_information.hpp"
 
 class ImuHandler : public Handler {
 public:
@@ -14,5 +14,5 @@ public:
 
 private:
   rclcpp::Node* node_;
-  rclcpp::Publisher<comms::msg::ImuSensorInformation>::SharedPtr pub_;
+  rclcpp::Publisher<rtt_comms::msg::ImuSensorInformation>::SharedPtr pub_;
 };

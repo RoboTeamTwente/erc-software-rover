@@ -1,4 +1,4 @@
-#include "comms/udp_client/diagnostics_payload.hpp"
+#include "rtt_comms/udp_client/diagnostics_payload.hpp"
 
 #include "components/sensor_board/diagnostics.pb.h"
 #include "components/sensor_board/imu_sensor.pb.h"

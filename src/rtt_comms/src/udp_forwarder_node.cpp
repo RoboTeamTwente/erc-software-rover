@@ -16,11 +16,11 @@
 
 // Envelope + handlers
 #include "components/common/envelope.pb.h"
-#include "comms/udp/handler.hpp"
-#include "comms/udp/handlers/sensor_board/imu_handler.hpp"
-#include "comms/udp/handlers/sensor_board/gps_handler.hpp"
-#include "comms/udp/handlers/sensor_board/ph_handler.hpp"
-#include "comms/udp/handlers/sensor_board/diagnostics_handler.hpp"
+#include "rtt_comms/udp/handler.hpp"
+#include "rtt_comms/udp/handlers/sensor_board/imu_handler.hpp"
+#include "rtt_comms/udp/handlers/sensor_board/gps_handler.hpp"
+#include "rtt_comms/udp/handlers/sensor_board/ph_handler.hpp"
+#include "rtt_comms/udp/handlers/sensor_board/diagnostics_handler.hpp"
 
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "rtt_behaviour/action/collect_task.hpp"

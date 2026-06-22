@@ -1,5 +1,5 @@
-#include "comms/udp/handlers/sensor_board/gps_handler.hpp"
-#include "comms/udp/utils.hpp"
+#include "rtt_comms/udp/handlers/sensor_board/gps_handler.hpp"
+#include "rtt_comms/udp/utils.hpp"
 
 #include "components/sensor_board/gps_sensor.pb.h"
 
@@ -8,7 +8,7 @@ GpsHandler::GpsHandler(rclcpp::Node* node,
                        std::size_t queue_size)
 : node_(node)
 {
-  pub_ = node_->create_publisher<comms::msg::SensorBoardGPSInfo>(topic, queue_size);
+  pub_ = node_->create_publisher<rtt_comms::msg::SensorBoardGPSInfo>(topic, queue_size);
 }
 
 void GpsHandler::handle(const PBEnvelope& envelope) {
@@ -16,7 +16,7 @@ void GpsHandler::handle(const PBEnvelope& envelope) {
 
   const SensorBoardGPSInfo& gps_pb = envelope.gps_info();
 
-  comms::msg::SensorBoardGPSInfo gps_ros;
+  rtt_comms::msg::SensorBoardGPSInfo gps_ros;
   gps_ros.latitude      = gps_pb.latitude();
   gps_ros.longitude     = gps_pb.longitude();
   gps_ros.altitude      = gps_pb.altitude();
@@ -28,9 +28,9 @@ void GpsHandler::handle(const PBEnvelope& envelope) {
   gps_ros.vdop          = gps_pb.vdop();
   gps_ros.satellites    = gps_pb.satellites();
 
-  gps_ros.fix_quality   = comms::udp::clamp_u8(static_cast<int>(gps_pb.fix_quality()));
-  gps_ros.state.state   = comms::udp::clamp_u8(static_cast<int>(gps_pb.state()));
-  gps_ros.error_code    = comms::udp::clamp_u8(static_cast<int>(gps_pb.error_code()));
+  gps_ros.fix_quality   = rtt_comms::udp::clamp_u8(static_cast<int>(gps_pb.fix_quality()));
+  gps_ros.state.state   = rtt_comms::udp::clamp_u8(static_cast<int>(gps_pb.state()));
+  gps_ros.error_code    = rtt_comms::udp::clamp_u8(static_cast<int>(gps_pb.error_code()));
 
   gps_ros.utc_timestamp = gps_pb.utc_timestamp();
 

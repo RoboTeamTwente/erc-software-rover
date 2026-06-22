@@ -1,8 +1,8 @@
 #pragma once
 
-#include "comms/udp/handler.hpp"
+#include "rtt_comms/udp/handler.hpp"
 #include <rclcpp/rclcpp.hpp>
-#include "comms/msg/sensor_board_ph_info.hpp"
+#include "rtt_comms/msg/sensor_board_ph_info.hpp"
 
 class PhHandler : public Handler {
 public:
@@ -14,5 +14,5 @@ public:
 
 private:
   rclcpp::Node* node_;
-  rclcpp::Publisher<comms::msg::SensorBoardPHInfo>::SharedPtr pub_;
+  rclcpp::Publisher<rtt_comms::msg::SensorBoardPHInfo>::SharedPtr pub_;
 };
