@@ -57,9 +57,9 @@ colcon mixin update default
 sudo rosdep init
 ```
 
-### Working with the project
+## Working with the project
 
-#### Compile everything
+### Compile everything
 
 ```bash
 # activate ROS2 (do this every time you open a terminal)
@@ -81,7 +81,7 @@ colcon build
 source install/local_setup.bash
 ```
 
-#### Run the simulation
+### Run the simulation
 
 ```bash
 # activate ROS2
