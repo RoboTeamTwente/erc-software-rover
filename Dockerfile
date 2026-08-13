@@ -1,4 +1,4 @@
-FROM docker.io/osrf/ros:humble-desktop-full@sha256:7323d816878a2c47000cd4e49d49642ffa677c4b1d96c5cf67c27d1434394ba2
+FROM docker.io/osrf/ros:humble-desktop-full@sha256:3178f4192a0220b20cad468e4b4c91c5d7c3d8c77cfbea85358d97db5af469c6
 WORKDIR /ws
 
 RUN apt-get update && apt-get upgrade -y
