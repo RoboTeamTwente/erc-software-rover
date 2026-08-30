@@ -1,0 +1,11 @@
+# Goal: a single hardware action from a BT leaf
+string command_type     # e.g. "approach", "open_gripper", "close_gripper"
+float32 param_float     # general float param (angle, distance…)
+string param_string     # general string param if needed
+---
+# Result
+bool success
+string message
+---
+# Feedback
+float32 completion      # 0.0 to 1.0
