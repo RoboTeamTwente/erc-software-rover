@@ -1,0 +1,11 @@
+# Goal: what the basestation wants the rover to do
+string task_name        # e.g. "collect_rock"
+string target_id        # e.g. "rock_01"
+---
+# Result
+bool success
+string message
+---
+# Feedback
+string current_node     # which BT node is running
+float32 progress        # 0.0 to 1.0

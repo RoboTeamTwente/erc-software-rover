@@ -1,45 +1,16 @@
-#include <ament_index_cpp/get_package_share_directory.hpp>
-#include <thread>
-
-#include "behaviortree_cpp/bt_factory.h"
-#include "ex.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "bt_manager.hpp"
 
 int main(int argc, char **argv) {
-    (void)argc;
-    (void)argv;
 
-    BT::BehaviorTreeFactory factory;
+    rclcpp::init(argc, argv);
 
-    // Register all custom nodes
-    factory.registerNodeType<MyRobotNodes::Approach>("Approach");
-    factory.registerNodeType<MyRobotNodes::IsNear>("IsNear");
-    factory.registerNodeType<MyRobotNodes::IsGripperOpen>("IsGripperOpen");
-    factory.registerNodeType<MyRobotNodes::OpenGripper>("OpenGripper");
-    factory.registerNodeType<MyRobotNodes::IsGripperClosed>("IsGripperClosed");
-    factory.registerNodeType<MyRobotNodes::CloseGripper>("CloseGripper");
-    factory.registerNodeType<MyRobotNodes::ExtractWithGripper>(
-        "ExtractWithGripper");
-    factory.registerNodeType<MyRobotNodes::IsEmpty>("IsEmpty");
-    factory.registerNodeType<MyRobotNodes::Contains>("Contains");
-    factory.registerNodeType<MyRobotNodes::IsContainerOpen>("IsContainerOpen");
-    factory.registerNodeType<MyRobotNodes::OpenContainer>("OpenContainer");
-    factory.registerNodeType<MyRobotNodes::IsContainerClosed>(
-        "IsContainerClosed");
-    factory.registerNodeType<MyRobotNodes::CloseContainer>("CloseContainer");
-    factory.registerNodeType<MyRobotNodes::IsArmResting>("IsArmResting");
-    factory.registerNodeType<MyRobotNodes::RestArm>("RestArm");
+    auto node = std::make_shared<BtManagerNode>();
 
-    std::string package_share =
-        ament_index_cpp::get_package_share_directory("rtt_behavior");
-    std::string xml_path = package_share + "/config/my_tree.xml";
+    rclcpp::executors::MultiThreadedExecutor executor;
+    executor.add_node(node);
+    executor.spin();
 
-    auto tree = factory.createTreeFromFile(xml_path);
-
-    BT::NodeStatus status = BT::NodeStatus::RUNNING;
-    while (status == BT::NodeStatus::RUNNING) {
-        status = tree.tickOnce();
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    }
-
+    rclcpp::shutdown();
     return 0;
 }

@@ -3,8 +3,15 @@
 
 #include "behaviortree_cpp/action_node.h"
 #include "behaviortree_cpp/condition_node.h"
+#include "rclcpp/rclcpp.hpp"
+#include "rclcpp_action/rclcpp_action.hpp" // Added this
+#include "behaviortree_ros2/bt_action_node.hpp"
+#include "turtlesim/action/rotate_absolute.hpp"
+#include "rtt_behavior/action/hardware_command.hpp"
 
 namespace MyRobotNodes {
+using HardwareCommand = rtt_behavior::action::HardwareCommand;
+    
 inline bool gripperOpen = true;
 inline bool containerOpen = false;
 inline bool armResting = true;
@@ -98,23 +105,26 @@ class IsNear : public BT::ConditionNode {
     int _distance;
 };
 
-class Approach : public BT::StatefulActionNode {
-   public:
-    Approach(const std::string &name, const BT::NodeConfig &config);
+class Approach : public BT::RosActionNode<HardwareCommand> {
+public:
+    // Use the base class alias to simplify the override signatures
+    using BaseClass = BT::RosActionNode<HardwareCommand>;
+
+    Approach(const std::string& name, 
+             const BT::NodeConfig& config, 
+             const BT::RosNodeParams& params)
+        : BaseClass(name, config, params) {}
 
     static BT::PortsList providedPorts() {
-        return {BT::InputPort<std::string>("entity"),
-                BT::InputPort<std::string>("target"),
-                BT::InputPort<int>("distance"), BT::InputPort<int>("angle"),
-                BT::InputPort<double>("speed")};
+        return {BT::InputPort<float>("theta")};
     }
 
-    BT::NodeStatus onStart() override;
-    BT::NodeStatus onRunning() override;
-    void onHalted() override;
+    // 4. Use 'BaseClass::' to help the compiler resolve the types
+    bool setGoal(BaseClass::Goal& goal) override;
 
-   private:
-    int _distance;
+    BT::NodeStatus onResultReceived(const BaseClass::WrappedResult& wr) override;
+
+    void onHalt() override;
 };
 
 class ExtractWithGripper : public BT::StatefulActionNode {

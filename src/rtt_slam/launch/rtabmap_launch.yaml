@@ -2,14 +2,14 @@
 
 launch:
   - group:
-
       - arg:
           name: rtabmap_viz
-          default: 'false'
+          description: set to true to launch rtabmap_viz
+          default: "false"
 
       # apply this config to all nodes launched from this file
       - set_parameters_from_file:
-          filename: '$(find-pkg-share rtt_slam)/config/rtabmap.yaml'
+          filename: "$(find-pkg-share rtt_slam)/config/rtabmap.yaml"
 
       - push_ros_namespace:
           namespace: rtabmap
@@ -27,6 +27,12 @@ launch:
           from: depth/image
           to: /camera/camera/aligned_depth_to_color/image_raw
 
+      - set_remap:
+          from: imu
+          to: /camera/camera/imu
+
+      ### RTABMAP itself
+
       - node:
           pkg: rtabmap_odom
           exec: rgbd_odometry
@@ -40,18 +46,9 @@ launch:
       - node:
           pkg: rtabmap_viz
           exec: rtabmap_viz
-          if: '$(var rtabmap_viz)'
+          if: "$(var rtabmap_viz)"
 
-      # Madgwick IMU filter, gives us nice quaternions, required for RTABMAP
-      - node:
-          pkg: imu_filter_madgwick
-          exec: imu_filter_madgwick_node
-          # connect it to the realsense2_camera
-          remap:
-            - from: imu/data_raw
-              to: /camera/camera/imu
-            - from: imu/data
-              to: imu
+      ### Support nodes
 
       # just place the camera at (0, 0, 0) for now
       # TODO: properly set up TF2 tree
@@ -59,4 +56,4 @@ launch:
           pkg: tf2_ros
           exec: static_transform_publisher
           name: static_tf_base_to_camera
-          args: '--frame-id base_link --child-frame-id camera_link'
+          args: "--frame-id base_link --child-frame-id camera_link"

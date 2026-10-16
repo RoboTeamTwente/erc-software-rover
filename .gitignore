@@ -10,7 +10,8 @@ log/
 .cache/clangd/
 
 # .vscode
-.vscode/
+/.vscode/
+!/.vscode/settings.json
 
 # webots
 *.wbproj

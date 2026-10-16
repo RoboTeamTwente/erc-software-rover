@@ -7,3 +7,6 @@
 [submodule "src/ros-gst-bridge"]
 	path = src/ros-gst-bridge
 	url = https://github.com/BrettRD/ros-gst-bridge
+[submodule "src/BehaviorTree.ROS2"]
+	path = src/BehaviorTree.ROS2
+	url = https://github.com/BehaviorTree/BehaviorTree.ROS2

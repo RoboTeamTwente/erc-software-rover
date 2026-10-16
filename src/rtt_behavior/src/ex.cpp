@@ -6,35 +6,37 @@ const int MIN_DISTANCE = 5;
 
 namespace MyRobotNodes {
 
-Approach::Approach(const std::string &name, const BT::NodeConfig &config)
-    : BT::StatefulActionNode(name, config) {}
+bool Approach::setGoal(BaseClass::Goal& goal) {
+    float target_theta = 0.0;
+    
+    // Read the angle from the Behavior Tree XML port
+    if (!getInput<float>("theta", target_theta)) {
+        return false; // Abort if the XML didn't provide a theta
+    }
 
-BT::NodeStatus Approach::onStart() {
-    std::string entity, target;
-    double speed = 0.0;
-    int angle = 0;
+    // Fill out your exact action fields!
+    goal.command_type = "approach";   // Tells COMMS node what to do
+    goal.param_float   = target_theta; // Tells COMMS node the angle
+    goal.param_string  = "";           // Not used for this command
 
-    getInput("entity", entity);
-    getInput("target", target);
-    getInput("speed", speed);
-    getInput("angle", angle);
-    if (!getInput<int>("distance", _distance)) _distance = 10;
-
-    std::cout << "[ Approach ] " << entity << " moving to " << target
-              << " at speed " << speed << ". Dist: " << _distance << "m."
-              << std::endl;
-    return BT::NodeStatus::RUNNING;
+    return true; // Send it over the network!
 }
 
-BT::NodeStatus Approach::onRunning() {
-    _distance--;
-    std::cout << "[ Approach ] Moving... " << _distance << " centimeters left."
-              << std::endl;
-
-    return (_distance <= 0) ? BT::NodeStatus::SUCCESS : BT::NodeStatus::RUNNING;
+// STEP 2: Read the result form coming back from the COMMS node
+BT::NodeStatus Approach::onResultReceived(const BaseClass::WrappedResult& wr) {
+    // Did the network call succeed, AND did the COMMS node mark success=true?
+    if (wr.code == rclcpp_action::ResultCode::SUCCEEDED && wr.result->success) {
+        return BT::NodeStatus::SUCCESS;
+    }
+    
+    return BT::NodeStatus::FAILURE;
 }
 
-void Approach::onHalted() { std::cout << "[ Approach ] HALTED!" << std::endl; }
+// STEP 3: Handle interruptions
+void Approach::onHalt() {
+    BaseClass::onHalt(); // Tells COMMS node to stop moving immediately
+}
+
 
 BT::NodeStatus IsNear::tick() {
     std::string entity, target;
