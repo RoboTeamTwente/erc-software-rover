@@ -26,14 +26,14 @@ xhost local:root
 
 # In a new terminal, to launch a new shell:
 sudo docker exec -it erc-software-rover bash
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 ```
 
 ### Option 2: WSL
 
 ```bash
 # Install Ubuntu
-wsl --install -d Ubuntu-22.04
+wsl --install -d Ubuntu-24.04
 wsl
 
 # add ROS2 packages source to APT
@@ -44,10 +44,10 @@ sudo dpkg -i /tmp/ros2-apt-source.deb
 
 # install ROS2
 sudo apt update
-sudo apt install ros-dev-tools ros-humble-desktop
+sudo apt install ros-dev-tools ros-jazzy-desktop
 
 # activate ROS2
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 
 # install colcon mixins
 colcon mixin add default https://raw.githubusercontent.com/colcon/colcon-mixin-repository/master/index.yaml
@@ -63,7 +63,7 @@ sudo rosdep init
 
 ```bash
 # activate ROS2 (do this every time you open a terminal)
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 
 # install dependencies
 rosdep update
