@@ -1,12 +1,17 @@
 /rtabmap:
   rgbd_odometry:
     ros__parameters:
-      # assume that the rover is stationary,
-      # use the first IMU sample to set initial pose
-      wait_imu_to_init: true
+      # was true. The raw RealSense IMU has no orientation, so waiting for it can block
+      # odometry forever. Set to true again once an IMU with orientation is wired in.
+      wait_imu_to_init: false
+
+      # the EKF publishes odom -> base_link, so rgbd_odometry must not
+      publish_tf: false
 
   rtabmap:
-    ros__parameters: {}
+    ros__parameters:
+      # take odometry from TF (published by the EKF) instead of the odom topic
+      odom_frame_id: odom
 
   imu_filter_madgwick:
     ros__parameters:

@@ -1,0 +1,40 @@
+# vi:sw=2:ts=2:et:
+# Whole test bench: Gazebo rover + EKF + RTAB-Map + Nav2, all from rtt_slam.
+# Same as rtt_slam/launch/slam_launch.yaml, except that Gazebo replaces the RealSense camera.
+
+launch:
+  - arg:
+      name: rtabmap_viz
+      description: set to true to launch rtabmap_viz
+      default: "true"
+
+  - set_parameter:
+      name: use_sim_time
+      value: "true"
+
+  # Gazebo
+  - include:
+      file: '$(find-pkg-share rtt_gazebo_sim)/launch/sim_launch.py'
+
+  # EKF, only for simulation
+  - include:
+      file: '$(find-pkg-share rtt_slam)/launch/ekf_launch.yaml'
+      arg:
+        - name: ekf_config
+          value: '$(find-pkg-share rtt_gazebo_sim)/config/ekf_sim.yaml'
+
+  # Current SLAM stack
+  - include:
+      file: '$(find-pkg-share rtt_slam)/launch/rtabmap_launch.yaml'
+      arg:
+        - name: publish_camera_tf
+          value: "false"
+        - name: rtabmap_viz
+          value: '$(var rtabmap_viz)'
+
+  # Nav2
+  - include:
+      file: '$(find-pkg-share rtt_slam)/launch/navigation_launch.yaml'
+      arg:
+        - name: use_sim_time
+          value: "true"

@@ -18,6 +18,7 @@
   <depend>nav2_bringup</depend>
   <depend>nav2_costmap_2d</depend>
   <depend>realsense2_camera</depend>
+  <depend>robot_localization</depend>
   <depend>rtabmap_launch</depend>
   <depend>slam_toolbox</depend>
   <depend>spatio_temporal_voxel_layer</depend>

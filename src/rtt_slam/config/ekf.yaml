@@ -1,0 +1,69 @@
+# EKF template (robot_localization). Meant to be the ONLY publisher of odom -> base_link.
+#
+# Status: only visual odometry (rgbd_odometry) is fused right now.
+# The IMU and wheel odometry blocks below are switched off. When the hardware
+# exists: publish the topic, uncomment the block, check the TODO lines.
+#
+# Config order of the 15 booleans in every *_config list:
+#   x, y, z,  roll, pitch, yaw,  vx, vy, vz,  vroll, vpitch, vyaw,  ax, ay, az
+
+ekf_filter_node:
+  ros__parameters:
+    frequency: 30.0            # same rate as the camera (30 fps)
+    sensor_timeout: 0.2
+
+    # TODO(team): rover drives on uneven Mars yard terrain, so full 3D for now.
+    # Set to true if the rover is treated as planar (ignores z, roll, pitch).
+    two_d_mode: false
+
+    publish_tf: true           # this node owns odom -> base_link
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_link
+    world_frame: odom          # odom -> base_link. map -> odom stays with rtabmap.
+
+    # Output: /odometry/filtered  (nav_msgs/Odometry)
+
+    # ---- Source 1: visual odometry from rtabmap (active) ----
+    odom0: /rtabmap/odom
+    odom0_config: [true,  true,  true,
+                   true,  true,  true,
+                   false, false, false,
+                   false, false, false,
+                   false, false, false]
+    odom0_differential: false
+    odom0_relative: false
+    odom0_queue_size: 10
+
+    # ---- Source 2: external IMU (OFF, not available yet) ----
+    # Needs a sensor_msgs/Imu topic with header.frame_id, stamps and covariances.
+    # rtt_comms currently publishes a custom message (ImuSensorInformation) with no
+    # header and no covariance, so a small converter node is needed first.
+    # TODO: static transform base_link -> imu_link with the real mounting.
+    # imu0: /imu/data
+    # imu0_config: [false, false, false,
+    #               false, false, false,    # set roll, pitch, yaw to true only if the
+    #               false, false, false,    # IMU gives a trusted orientation
+    #               true,  true,  true,     # angular velocity only, safest start
+    #               false, false, false]    # enable accel only after gravity is verified
+    # imu0_differential: false
+    # imu0_relative: false
+    # imu0_queue_size: 20
+    # imu0_remove_gravitational_acceleration: true
+
+    # ---- Source 3: wheel odometry (OFF, not available yet) ----
+    # TODO: ask control/embedded which topic, frame and covariance they will publish.
+    # TODO: pick the axes to trust. vx and vyaw is a normal start for a skid or
+    #       rocker style rover. Add vy only if the drive can move sideways.
+    # odom1: /wheel/odom
+    # odom1_config: [false, false, false,
+    #                false, false, false,
+    #                true,  false, false,
+    #                false, false, true,
+    #                false, false, false]
+    # odom1_differential: false
+    # odom1_relative: false
+    # odom1_queue_size: 10
+
+    # Noise tuning: defaults are used on purpose. Tune process_noise_covariance
+    # (15x15, flat list of 225 numbers) only after real data shows a problem.

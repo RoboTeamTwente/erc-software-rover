@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<robot name="rtt_rover" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!--
+    PLACEHOLDER ROVER. Every size, mass and mounting value below is a guess until the
+    mechanical redesign is final. Frames follow rtt_slam: base_link is the root, the
+    camera uses the RealSense names (camera_link, camera_color_optical_frame).
+    base_link sits at the wheel axle height, x forward, y left, z up.
+  -->
+
+  <xacro:property name="PI" value="3.14159265359"/>
+
+  <!-- chassis -->
+  <xacro:property name="chassis_l" value="0.70"/>
+  <xacro:property name="chassis_w" value="0.40"/>
+  <xacro:property name="chassis_h" value="0.20"/>
+  <xacro:property name="chassis_mass" value="20.0"/>
+
+  <!-- wheels (4 wheel skid steer) -->
+  <xacro:property name="wheel_r" value="0.12"/>
+  <xacro:property name="wheel_w" value="0.10"/>
+  <xacro:property name="wheel_mass" value="1.5"/>
+  <xacro:property name="wheel_x" value="0.25"/>
+  <xacro:property name="wheel_y" value="0.30"/>
+
+  <!-- camera mount (GUESS: about 0.35 m up, tilted 0.3 rad down) -->
+  <xacro:property name="cam_x" value="0.30"/>
+  <xacro:property name="cam_z" value="0.35"/>
+  <xacro:property name="cam_pitch" value="0.3"/>
+
+  <link name="base_link"/>
+
+  <link name="chassis_link">
+    <visual>
+      <geometry><box size="${chassis_l} ${chassis_w} ${chassis_h}"/></geometry>
+      <material name="chassis_grey"><color rgba="0.55 0.55 0.6 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="${chassis_l} ${chassis_w} ${chassis_h}"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="${chassis_mass}"/>
+      <inertia ixx="${chassis_mass/12*(chassis_w*chassis_w+chassis_h*chassis_h)}" ixy="0" ixz="0"
+               iyy="${chassis_mass/12*(chassis_l*chassis_l+chassis_h*chassis_h)}" iyz="0"
+               izz="${chassis_mass/12*(chassis_l*chassis_l+chassis_w*chassis_w)}"/>
+    </inertial>
+  </link>
+  <joint name="base_to_chassis" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis_link"/>
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+  </joint>
+
+  <xacro:macro name="wheel" params="name x y">
+    <link name="${name}_wheel">
+      <visual>
+        <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+        <geometry><cylinder radius="${wheel_r}" length="${wheel_w}"/></geometry>
+        <material name="wheel_black"><color rgba="0.1 0.1 0.1 1"/></material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+        <geometry><cylinder radius="${wheel_r}" length="${wheel_w}"/></geometry>
+      </collision>
+      <inertial>
+        <mass value="${wheel_mass}"/>
+        <inertia ixx="${wheel_mass/12*(3*wheel_r*wheel_r+wheel_w*wheel_w)}" ixy="0" ixz="0"
+                 iyy="${0.5*wheel_mass*wheel_r*wheel_r}" iyz="0"
+                 izz="${wheel_mass/12*(3*wheel_r*wheel_r+wheel_w*wheel_w)}"/>
+      </inertial>
+    </link>
+    <joint name="${name}_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${name}_wheel"/>
+      <origin xyz="${x} ${y} 0" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+    <!-- TODO: tune friction. Skid steering needs the sideways friction (mu2) lower than mu1. -->
+    <gazebo reference="${name}_wheel">
+      <mu1>1.0</mu1>
+      <mu2>0.4</mu2>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:wheel name="fl" x="${wheel_x}"  y="${wheel_y}"/>
+  <xacro:wheel name="rl" x="${-wheel_x}" y="${wheel_y}"/>
+  <xacro:wheel name="fr" x="${wheel_x}"  y="${-wheel_y}"/>
+  <xacro:wheel name="rr" x="${-wheel_x}" y="${-wheel_y}"/>
+
+  <!-- camera, same frame layout as the RealSense driver -->
+  <link name="camera_link">
+    <visual>
+      <geometry><box size="0.03 0.09 0.025"/></geometry>
+      <material name="camera_dark"><color rgba="0.1 0.1 0.15 1"/></material>
+    </visual>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="base_to_camera" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin xyz="${cam_x} 0 ${cam_z}" rpy="0 ${cam_pitch} 0"/>
+  </joint>
+
+  <link name="camera_color_optical_frame"/>
+  <joint name="camera_to_optical" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_color_optical_frame"/>
+    <origin xyz="0 0 0" rpy="${-PI/2} 0 ${-PI/2}"/>
+  </joint>
+
+  <gazebo reference="camera_link">
+    <sensor name="camera" type="rgbd_camera">
+      <always_on>true</always_on>
+      <update_rate>15</update_rate>
+      <topic>/camera/camera</topic>
+      <gz_frame_id>camera_color_optical_frame</gz_frame_id>
+      <camera>
+        <horizontal_fov>1.204</horizontal_fov>
+        <image>
+          <width>424</width>
+          <height>240</height>
+        </image>
+        <clip>
+          <near>0.1</near>
+          <far>10.0</far>
+        </clip>
+      </camera>
+    </sensor>
+  </gazebo>
+
+  <!-- IMU at the center of base_link (GUESS) -->
+  <link name="imu_link">
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+  <joint name="base_to_imu" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+  </joint>
+
+  <gazebo reference="imu_link">
+    <sensor name="imu" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <topic>/imu/data_raw</topic>
+      <gz_frame_id>imu_link</gz_frame_id>
+      <imu>
+        <angular_velocity>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.002</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.002</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.002</stddev></noise></z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x><noise type="gaussian"><mean>0.0</mean><stddev>0.02</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0.0</mean><stddev>0.02</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0.0</mean><stddev>0.02</stddev></noise></z>
+        </linear_acceleration>
+      </imu>
+    </sensor>
+  </gazebo>
+
+  <!-- Gazebo plugins -->
+  <gazebo>
+    <!-- 4 wheel skid steer. Wheel odometry goes out on /wheel/odom_raw. Its TF is not bridged,
+         so the EKF stays the only publisher of odom -> base_link. -->
+    <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+      <left_joint>fl_wheel_joint</left_joint>
+      <left_joint>rl_wheel_joint</left_joint>
+      <right_joint>fr_wheel_joint</right_joint>
+      <right_joint>rr_wheel_joint</right_joint>
+      <wheel_separation>${2*wheel_y}</wheel_separation>
+      <wheel_radius>${wheel_r}</wheel_radius>
+      <odom_publish_frequency>30</odom_publish_frequency>
+      <topic>/cmd_vel</topic>
+      <odom_topic>/wheel/odom_raw</odom_topic>
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_link</child_frame_id>
+      <max_linear_velocity>1.5</max_linear_velocity>
+      <max_angular_velocity>2.0</max_angular_velocity>
+    </plugin>
+
+    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+      <topic>/joint_states</topic>
+    </plugin>
+  </gazebo>
+
+</robot>
