@@ -12,15 +12,12 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
-  <depend>depthimage_to_laserscan</depend>
-  <depend>gst_bridge</depend>
-  <depend>imu_tools</depend>
+  <depend>gst_bridge</depend> <!-- rosimagesrc in scripts/stream.sh -->
+  <depend>imu_tools</depend> <!-- imu_filter_madgwick in rtabmap_launch.yaml -->
   <depend>nav2_bringup</depend>
   <depend>nav2_costmap_2d</depend>
   <depend>realsense2_camera</depend>
   <depend>rtabmap_launch</depend>
-  <depend>slam_toolbox</depend>
-  <depend>spatio_temporal_voxel_layer</depend>
   <depend>tf2_ros</depend>
 
   <export>

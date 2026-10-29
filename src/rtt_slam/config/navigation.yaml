@@ -49,3 +49,51 @@ controller_server:
 map_server:
   ros__parameters:
     yaml_filename: bogus_value_that_launch_file_overrides # hopefully
+
+# Jazzy: nav2_bringup's navigation_launch.py also starts collision_monitor and
+# docking_server (Humble did not). Both refuse to configure without the params
+# below, and one failed node makes the lifecycle manager abort the whole Nav2
+# bringup. Values are based on Jazzy's default nav2_params.yaml.
+
+# Velocity chain on Jazzy:
+#   controller -> cmd_vel_nav -> velocity_smoother -> cmd_vel_smoothed
+#   -> collision_monitor -> cmd_vel
+# so collision_monitor has to run, otherwise nothing reaches /cmd_vel.
+collision_monitor:
+  ros__parameters:
+    base_frame_id: base_link # Jazzy default is base_footprint, which we don't have
+    odom_frame_id: odom
+    cmd_vel_in_topic: cmd_vel_smoothed
+    cmd_vel_out_topic: cmd_vel
+    state_topic: collision_monitor_state
+    transform_tolerance: 0.2
+    source_timeout: 1.0
+    # stop when the footprint would hit an obstacle within time_before_collision
+    polygons: ["FootprintApproach"]
+    FootprintApproach:
+      type: polygon
+      action_type: approach
+      footprint_topic: /local_costmap/published_footprint
+      time_before_collision: 1.2
+      simulation_time_step: 0.1
+      min_points: 6
+      enabled: true
+    # we have no laser scan, so use the depth camera pointcloud
+    observation_sources: ["depth_cam"]
+    depth_cam:
+      type: pointcloud
+      topic: /camera/camera/depth/color/points
+      # TODO: heights are relative to base_link. base_link -> camera_link is still a
+      # zero placeholder TF, so these only make sense once the real mounting is set.
+      min_height: 0.15
+      max_height: 2.0
+      enabled: true
+
+# We don't dock, but docking_server needs at least one dock plugin to configure.
+docking_server:
+  ros__parameters:
+    base_frame: base_link
+    fixed_frame: odom
+    dock_plugins: ["unused_dock"]
+    unused_dock:
+      plugin: opennav_docking::SimpleNonChargingDock
