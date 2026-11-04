@@ -7,7 +7,8 @@
       publish_tf: false
 
   rtabmap:
-    ros__parameters: {}
+    ros__parameters:
+      odom_frame_id: odom
 
   imu_filter_madgwick: # only need since imu data from the camera is badly formatted/formated in a way rtab map didn't want 
     ros__parameters:

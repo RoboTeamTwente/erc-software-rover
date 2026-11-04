@@ -27,10 +27,6 @@ launch:
           from: depth/image
           to: /camera/camera/aligned_depth_to_color/image_raw
 
-      - set_remap:
-          from: imu
-          to: /camera/camera/imu
-
       ### RTABMAP itself
 
       - node:
@@ -55,7 +51,7 @@ launch:
           exec: imu_filter_madgwick_node
           # connect it to the realsense2_camera
           remap:
-            - from: imu/data_raw4
+            - from: imu/data_raw
               to: /camera/camera/imu
             - from: imu/data
               to: imu
