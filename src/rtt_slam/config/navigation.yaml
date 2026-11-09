@@ -49,3 +49,43 @@ controller_server:
 map_server:
   ros__parameters:
     yaml_filename: bogus_value_that_launch_file_overrides # hopefully
+
+collision_monitor:
+  ros__parameters:
+    base_frame_id: "base_link"        # your URDF has no base_footprint
+    odom_frame_id: "odom"
+    cmd_vel_in_topic: "cmd_vel_smoothed"
+    cmd_vel_out_topic: "cmd_vel"
+    state_topic: "collision_monitor_state"
+    transform_tolerance: 0.2
+    source_timeout: 1.0               # older sensor data -> rover is stopped
+    base_shift_correction: True
+    stop_pub_timeout: 2.0
+    polygons: ["FootprintApproach"]
+    FootprintApproach:
+      type: "polygon"
+      action_type: "approach"         # slow down so the footprint never hits an obstacle
+      footprint_topic: "/local_costmap/published_footprint"
+      time_before_collision: 1.2
+      simulation_time_step: 0.1
+      min_points: 6
+      visualize: False
+      enabled: True
+    observation_sources: ["depth_cam"]
+    depth_cam:
+      type: "pointcloud"              # no laser scanner, so use the depth point cloud
+      topic: "/camera/camera/depth/color/points"
+      min_height: 0.10                # ignore ground points (height in base_link)
+      max_height: 1.0
+      enabled: True
+
+docking_server:
+  ros__parameters:
+    base_frame: "base_link"
+    fixed_frame: "odom"
+    dock_plugins: ["simple_charging_dock"]   # required, at least one
+    simple_charging_dock:
+      plugin: "opennav_docking::SimpleChargingDock"
+      use_external_detection_pose: true
+      use_battery_status: false
+      use_stall_detection: false

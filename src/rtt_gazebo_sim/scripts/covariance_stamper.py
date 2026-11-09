@@ -13,7 +13,7 @@ from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Imu
-
+from rclpy.executors import ExternalShutdownException
 
 def diag6(values):
     m = [0.0] * 36
@@ -61,11 +61,11 @@ def main():
     node = CovarianceStamper()
     try:
         rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
-    node.destroy_node()
-    rclpy.shutdown()
-
+    except (KeyboardInterrupt, ExternalShutdownException):
+        pass  # normal stop: Ctrl-C or launch shutting us down
+    finally:
+        node.destroy_node()
+        rclpy.try_shutdown()  # shuts down only if not already done
 
 if __name__ == '__main__':
     main()
