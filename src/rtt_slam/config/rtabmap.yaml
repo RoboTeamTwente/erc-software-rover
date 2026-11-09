@@ -7,11 +7,16 @@
 
       # the EKF publishes odom -> base_link, so rgbd_odometry must not
       publish_tf: false
+      Odom/ResetCountdown: "15"   # auto-reset after 15 consecutive lost frames
+      log_to_rosout_level: 2
 
   rtabmap:
     ros__parameters:
       # take odometry from TF (published by the EKF) instead of the odom topic
-      odom_frame_id: odom
+      # odom_frame_id: odom
+
+      subscribe_odom: true    # default anyway, made explicit
+      sync_queue_size: 30     # a bit more slack for matching odom to images
 
   imu_filter_madgwick:
     ros__parameters:

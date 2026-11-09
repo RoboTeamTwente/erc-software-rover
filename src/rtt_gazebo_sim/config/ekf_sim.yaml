@@ -13,7 +13,7 @@ ekf_filter_node:
     odom_frame: odom
     base_link_frame: base_link
     world_frame: odom
-
+    
     # visual odometry from rtabmap
     odom0: /rtabmap/odom
     odom0_config: [true,  true,  true,
@@ -21,10 +21,10 @@ ekf_filter_node:
                    false, false, false,
                    false, false, false,
                    false, false, false]
-    odom0_differential: false
+    odom0_differential: true
     odom0_relative: false
     odom0_queue_size: 10
-
+    
     # wheel odometry (with covariance added by covariance_stamper.py)
     odom1: /wheel/odom
     odom1_config: [false, false, false,

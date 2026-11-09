@@ -36,12 +36,16 @@ launch:
       - node:
           pkg: rtabmap_odom
           exec: rgbd_odometry
-
+          
+        
       - node:
           pkg: rtabmap_slam
           exec: rtabmap
           # rtabmap saves the map on disk forever. this flag removes it on launch.
           args: --delete_db_on_start
+          remap:
+            - from: odom
+              to: /odometry/filtered
 
       - node:
           pkg: rtabmap_viz
