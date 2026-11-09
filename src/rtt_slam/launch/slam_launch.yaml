@@ -13,3 +13,7 @@ launch:
   # Nav2
   - include:
       file: '$(find-pkg-share rtt_slam)/launch/navigation_launch.yaml'
+
+  # EKF
+  - include:
+      file: '$(find-pkg-share rtt_slam)/launch/ekf_launch.yaml'  
