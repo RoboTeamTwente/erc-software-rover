@@ -1,6 +1,7 @@
 global_costmap:
   global_costmap:
     ros__parameters:
+      footprint: "[[0.37, 0.35], [0.37, -0.35], [-0.37, -0.35], [-0.37, 0.35]]"
       publish_frequency: 2.
       update_frequency: 5.
       plugins:
@@ -16,6 +17,7 @@ global_costmap:
 local_costmap:
   local_costmap:
     ros__parameters:
+      footprint: "[[0.37, 0.35], [0.37, -0.35], [-0.37, -0.35], [-0.37, 0.35]]"
       publish_frequency: 2.
       update_frequency: 5.
       rolling_window: true
@@ -75,7 +77,7 @@ collision_monitor:
     depth_cam:
       type: "pointcloud"              # no laser scanner, so use the depth point cloud
       topic: "/camera/camera/depth/color/points"
-      min_height: 0.10                # ignore ground points (height in base_link)
+      min_height: 0.05                # ignore ground points (height in base_link)
       max_height: 1.0
       enabled: True
 

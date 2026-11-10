@@ -12,7 +12,7 @@
 
   rtabmap:
     ros__parameters:
-      # take odometry from TF (published by the EKF) instead of the odom topic
+      # take odometry from TF and Ekf directly for both position and uncertainty
       # odom_frame_id: odom
 
       subscribe_odom: true    # default anyway, made explicit
