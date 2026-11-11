@@ -1,18 +1,61 @@
 # vi:sw=2:ts=2:et:
+#
+# The whole SLAM stack. This is the single entry point for the real rover AND
+# for the simulation: rtt_gazebo_sim includes this file with
+#   realsense:=false publish_camera_tf:=false use_sim_time:=true
+# so both run the same nodes with the same config files.
 
 launch:
+  - arg:
+      name: realsense
+      description: >-
+        start the RealSense driver. Set to false when something else
+        (e.g. Gazebo) publishes the /camera/camera/... topics
+      default: "true"
+
+  - arg:
+      name: publish_camera_tf
+      description: >-
+        publish the placeholder base_link -> camera_link transform. Set to false
+        when a robot model (robot_state_publisher) already publishes it
+      default: "true"
+
+  - arg:
+      name: use_sim_time
+      description: use the /clock topic instead of the system clock
+      default: "false"
+
+  - arg:
+      name: rtabmap_viz
+      description: set to true to launch rtabmap_viz
+      default: "false"
 
   # camera
   - include:
       file: '$(find-pkg-share rtt_slam)/launch/camera_launch.yaml'
+      if: '$(var realsense)'
 
   # RTABMAP
   - include:
       file: '$(find-pkg-share rtt_slam)/launch/rtabmap_launch.yaml'
+      arg:
+        - name: publish_camera_tf
+          value: '$(var publish_camera_tf)'
+        - name: use_sim_time
+          value: '$(var use_sim_time)'
+        - name: rtabmap_viz
+          value: '$(var rtabmap_viz)'
 
   # Nav2
   - include:
       file: '$(find-pkg-share rtt_slam)/launch/navigation_launch.yaml'
+      arg:
+        - name: use_sim_time
+          value: '$(var use_sim_time)'
+
   # EKF
   - include:
       file: '$(find-pkg-share rtt_slam)/launch/ekf_launch.yaml'
+      arg:
+        - name: use_sim_time
+          value: '$(var use_sim_time)'

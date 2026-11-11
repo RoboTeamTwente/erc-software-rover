@@ -3,9 +3,18 @@
 launch:
   - group:
 
+    - arg:
+        name: use_sim_time
+        description: use the /clock topic instead of the system clock
+        default: "false"
+
     # apply this config to all nodes launched from this file
     - set_parameters_from_file:
         filename: '$(find-pkg-share rtt_slam)/config/navigation.yaml'
+
+    - set_parameter:
+        name: use_sim_time
+        value: '$(var use_sim_time)'
 
     # Nav2
     - include:
@@ -14,6 +23,9 @@ launch:
           # referencing the same config again, because the launch file requires it
           - name: params_file
             value: '$(find-pkg-share rtt_slam)/config/navigation.yaml'
+          # Nav2 sets use_sim_time for its own nodes from this argument
+          - name: use_sim_time
+            value: '$(var use_sim_time)'
 
     # VoxelGrid to Markers
     - node:
