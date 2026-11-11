@@ -56,5 +56,9 @@ def generate_launch_description():
         Node(package='ros_gz_bridge', executable='parameter_bridge', output='screen',
              parameters=[{'config_file': os.path.join(pkg, 'config', 'bridge.yaml')}]),
 
-        Node(package='rtt_gazebo_sim', executable='covariance_stamper.py', output='screen'),
+        # /wheel/odom_raw -> /wheel/odom and /imu/data_raw -> /camera/camera/imu.
+        # rtt_slam reads its IMU from the RealSense topic, so the simulated IMU is published
+        # there. If rtt_slam moves to another IMU topic, this remap is the only place to change.
+        Node(package='rtt_gazebo_sim', executable='covariance_stamper.py', output='screen',
+             remappings=[('/imu/data', '/camera/camera/imu')]),
     ])

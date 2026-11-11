@@ -24,22 +24,27 @@ Drive by hand:
   skid steer, RealSense style camera frames, IMU. All sizes are guesses.
 - config/bridge.yaml: Gazebo to ROS topics, named exactly like the RealSense topics rtt_slam uses.
 - scripts/covariance_stamper.py: adds covariance to wheel odometry and IMU (Gazebo gives zeros).
-- config/ekf_sim.yaml: EKF with visual odometry, wheel odometry and IMU all enabled.
+
+There is no SLAM, EKF or Nav2 config in this package on purpose. sim_slam_launch.yaml includes
+rtt_slam/launch/slam_launch.yaml with `realsense:=false publish_camera_tf:=false
+use_sim_time:=true`, so the sim runs the same nodes and config files as the rover.
 
 ## Data flow
 
     Gazebo camera -> /camera/camera/... -> rgbd_odometry -> /rtabmap/odom -> EKF
     Gazebo diff drive -> /wheel/odom_raw -> covariance_stamper -> /wheel/odom -> EKF
-    Gazebo IMU -> /imu/data_raw -> covariance_stamper -> /imu/data -> EKF
+    Gazebo IMU -> /imu/data_raw -> covariance_stamper -> /camera/camera/imu
+               -> imu_filter_madgwick -> /rtabmap/imu -> rgbd_odometry + EKF
     EKF -> TF odom->base_link -> rtabmap -> /rtabmap/map + TF map->odom -> Nav2
     Nav2 -> /cmd_vel -> Gazebo diff drive
 
 ## First run checklist
 
 1. gz topic -l                 camera topics exist: /camera/camera/image, depth_image, camera_info, points
-2. ros2 topic list            the RealSense named topics and /wheel/odom, /imu/data are there
+2. ros2 topic list            the RealSense named topics (incl. /camera/camera/imu) and /wheel/odom are there
 3. ros2 run tf2_tools view_frames   one parent per frame, odom->base_link published by ekf_filter_node
-4. ros2 topic hz /rtabmap/odom      visual odometry is running (camera is 15 Hz)
+4. ros2 topic hz /rtabmap/odom      visual odometry is running (camera is 15 Hz). If it logs
+   "waiting imu", check /rtabmap/imu
 5. ros2 topic echo /odometry/filtered   EKF output
 6. Drive a loop with teleop and watch the map in rtabmap_viz or RViz
 
@@ -51,6 +56,9 @@ Drive by hand:
 - Camera range 10 m, 15 Hz, no depth noise. Real RealSense data will be worse.
 - Skid steer friction (mu1, mu2 in the xacro) and wheel_separation need tuning. Wheel odometry
   from a skid steer rover over rough ground is expected to be poor.
-- rtt_slam changes: wait_imu_to_init is now false, publish_tf of rgbd_odometry is false, rtabmap
-  reads odom from TF, and the launch files take new arguments (ekf_config, publish_camera_tf,
-  use_sim_time).
+- The simulated IMU sits at imu_link (center of base_link) and is published on the RealSense
+  IMU topic, because that is the IMU rtt_slam uses today. Its noise values model the planned
+  external IMU, not the RealSense one.
+- The rgbd_camera point cloud (/camera/camera/depth/color/points) feeds the Nav2 voxel layer.
+  Check in RViz that it lines up with the terrain; if it is rotated, the cloud needs its own
+  frame (Gazebo publishes it x-forward, the image frame is z-forward).

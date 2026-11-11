@@ -1,6 +1,11 @@
 # vi:sw=2:ts=2:et:
-# Whole test bench: Gazebo rover + EKF + RTAB-Map + Nav2, all from rtt_slam.
-# Same as rtt_slam/launch/slam_launch.yaml, except that Gazebo replaces the RealSense camera.
+# Whole test bench: Gazebo rover + the unmodified rtt_slam stack.
+#
+# Gazebo replaces the hardware only (RealSense camera + IMU, wheel odometry).
+# Everything else is rtt_slam/launch/slam_launch.yaml with rtt_slam's own config
+# files, so what is tested here is what runs on the rover. Do not copy rtt_slam
+# config into this package: if the sim needs a different value, the real config
+# is probably what needs changing.
 
 launch:
   - arg:
@@ -8,33 +13,19 @@ launch:
       description: set to true to launch rtabmap_viz
       default: "true"
 
-  - set_parameter:
-      name: use_sim_time
-      value: "true"
-
-  # Gazebo
+  # Gazebo: world, rover, bridge, covariance stamper
   - include:
       file: '$(find-pkg-share rtt_gazebo_sim)/launch/sim_launch.py'
 
-  # EKF, only for simulation
+  # SLAM stack, same launch file and config as the real rover
   - include:
-      file: '$(find-pkg-share rtt_slam)/launch/ekf_launch.yaml'
+      file: '$(find-pkg-share rtt_slam)/launch/slam_launch.yaml'
       arg:
-        - name: ekf_config
-          value: '$(find-pkg-share rtt_gazebo_sim)/config/ekf_sim.yaml'
-
-  # Current SLAM stack
-  - include:
-      file: '$(find-pkg-share rtt_slam)/launch/rtabmap_launch.yaml'
-      arg:
-        - name: publish_camera_tf
+        - name: realsense            # Gazebo publishes the camera topics
           value: "false"
-        - name: rtabmap_viz
-          value: '$(var rtabmap_viz)'
-
-  # Nav2
-  - include:
-      file: '$(find-pkg-share rtt_slam)/launch/navigation_launch.yaml'
-      arg:
+        - name: publish_camera_tf    # robot_state_publisher has the real mounting
+          value: "false"
         - name: use_sim_time
           value: "true"
+        - name: rtabmap_viz
+          value: '$(var rtabmap_viz)'
