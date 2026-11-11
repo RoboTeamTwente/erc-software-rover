@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="mars_yard">
+    <static>true</static>
+    <link name="terrain">
+      <!-- detailed mesh, texture baked from the vertex colors of Model3D_mesh.fbx -->
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://mars_yard/meshes/terrain_visual.obj</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <diffuse>1 1 1 1</diffuse>
+          <specular>0.05 0.05 0.05 1</specular>
+          <pbr>
+            <metal>
+              <albedo_map>model://mars_yard/materials/textures/terrain.jpg</albedo_map>
+              <roughness>1.0</roughness>
+              <metalness>0.0</metalness>
+            </metal>
+          </pbr>
+        </material>
+      </visual>
+      <!-- Use the normal-bearing mesh for physics. DART crashes on the coarse OBJ,
+           which has faces but no vertex normals. -->
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://mars_yard/meshes/terrain_visual.obj</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.9</mu>
+              <mu2>0.9</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+    </link>
+  </model>
+</sdf>

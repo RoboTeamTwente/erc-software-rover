@@ -4,7 +4,13 @@
       # assume that the rover is stationary,
       # use the first IMU sample to set initial pose
       wait_imu_to_init: true
+
+      # the EKF publishes odom -> base_link, so rgbd_odometry must not
       publish_tf: false
+
+      # recover by itself after 15 consecutive frames without odometry
+      # (default 0 = stay lost until reset_odom is called by hand)
+      Odom/ResetCountdown: "15"
 
   rtabmap:
     ros__parameters:
