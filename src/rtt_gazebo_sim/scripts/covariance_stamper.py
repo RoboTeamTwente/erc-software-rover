@@ -6,7 +6,7 @@ means "trust completely". The real rover needs the same step (the board IMU mess
 covariance at all), so the numbers below double as a first template for it.
 
 /wheel/odom_raw -> /wheel/odom
-/imu/data_raw   -> /imu/data   (sim_launch.py remaps this to /camera/camera/imu)
+/imu/data_raw   -> /imu/data
 """
 import rclpy
 from rclpy.node import Node

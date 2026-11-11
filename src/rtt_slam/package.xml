@@ -13,7 +13,6 @@
   <test_depend>ament_lint_common</test_depend>
 
   <depend>gst_bridge</depend> <!-- rosimagesrc in scripts/stream.sh -->
-  <depend>imu_tools</depend> <!-- imu_filter_madgwick in rtabmap_launch.yaml -->
   <depend>nav2_bringup</depend>
   <depend>nav2_costmap_2d</depend>
   <depend>realsense2_camera</depend>

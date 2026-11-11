@@ -43,6 +43,11 @@ launch:
           from: depth/image
           to: /camera/camera/aligned_depth_to_color/image_raw
 
+      # external IMU with orientation (Xsens on the rover, Gazebo IMU in the sim)
+      - set_remap:
+          from: imu
+          to: /imu/data
+
       ### RTABMAP itself
 
       - node:
@@ -54,6 +59,10 @@ launch:
           exec: rtabmap
           # rtabmap saves the map on disk forever. this flag removes it on launch.
           args: --delete_db_on_start
+          # odometry from the EKF: pose and covariance
+          remap:
+            - from: odom
+              to: /odometry/filtered
 
       - node:
           pkg: rtabmap_viz
@@ -61,16 +70,6 @@ launch:
           if: "$(var rtabmap_viz)"
 
       ### Support nodes
-      # Madgwick IMU filter, gives us nice quaternions, required for RTABMAP
-      - node:
-          pkg: imu_filter_madgwick
-          exec: imu_filter_madgwick_node
-          # connect it to the realsense2_camera
-          remap:
-            - from: imu/data_raw
-              to: /camera/camera/imu
-            - from: imu/data
-              to: imu
 
       # just place the camera at (0, 0, 0) for now
       # TODO: properly set up TF2 tree

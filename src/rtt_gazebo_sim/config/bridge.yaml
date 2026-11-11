@@ -13,8 +13,7 @@
   gz_type_name: "gz.msgs.Twist"
   direction: ROS_TO_GZ
 
-# raw sensor data, covariance_stamper.py turns these into /wheel/odom and
-# /camera/camera/imu (the RealSense IMU topic, see launch/sim_launch.py)
+# raw sensor data, covariance_stamper.py turns these into /wheel/odom and /imu/data
 - ros_topic_name: "/wheel/odom_raw"
   gz_topic_name: "/wheel/odom_raw"
   ros_type_name: "nav_msgs/msg/Odometry"
