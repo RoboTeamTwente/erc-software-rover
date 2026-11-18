@@ -1,0 +1,41 @@
+# ERC 2026 Mars Yard points, from "2026 Mars Yard Update Report" Rev 1.1 (17.08.2026).
+# Frame: origin S1, +Y towards S2, +X to the right (seen from above), Z up. Units: metres.
+# h = "H (local)" from the report = ground height at the point (S1 = 0).
+# Landmarks: marker centre is 0.417 m above ground (rulebook Figure 9); ArUco 5x5, 150 mm,
+# IDs 51-65: landmark L<n> carries ArUco ID 50+n.
+start_points:
+  S1: {x: 0.000, y: 0.000, h: 0.000}
+  S2: {x: 0.000, y: 26.427, h: 0.138}
+  S3: {x: 10.709, y: 6.918, h: 0.067}
+  S4: {x: 11.210, y: 17.881, h: 0.100}
+  S5: {x: 13.223, y: 25.658, h: -0.035}
+  S6: {x: -9.428, y: 15.824, h: -0.302}
+  S7: {x: -8.970, y: 22.831, h: -0.180}
+  S8: {x: -15.676, y: 4.991, h: -0.280}
+  S9: {x: 7.160, y: -4.762, h: -0.095}
+waypoints:
+  W1: {x: 1.951, y: 9.759, h: -0.053}
+  W2: {x: 4.170, y: 19.499, h: 0.105}
+  W3: {x: 7.013, y: 23.149, h: 0.205}
+  W4: {x: -1.701, y: 18.665, h: -0.156}
+  W5: {x: -5.339, y: 19.034, h: -0.259}
+  W6: {x: -7.675, y: 8.197, h: -0.179}
+  W7: {x: -2.108, y: 7.682, h: -0.163}
+  W8: {x: 5.939, y: 6.790, h: -0.065}
+  W9: {x: 5.088, y: 13.092, h: 0.011}
+landmarks:
+  L1: {x: 3.183, y: 8.012, h: 0.361, aruco_id: 51}
+  L2: {x: 7.269, y: 9.482, h: 0.281, aruco_id: 52}
+  L3: {x: 7.878, y: 17.583, h: 0.398, aruco_id: 53}
+  L4: {x: 9.225, y: 22.389, h: 0.437, aruco_id: 54}
+  L5: {x: 3.518, y: 23.990, h: 0.272, aruco_id: 55}
+  L6: {x: 0.882, y: 16.870, h: 0.259, aruco_id: 56}
+  L7: {x: -3.944, y: 21.415, h: 0.104, aruco_id: 57}
+  L8: {x: -5.491, y: 16.334, h: 0.061, aruco_id: 58}
+  L9: {x: -7.695, y: 13.528, h: -0.051, aruco_id: 59}
+  L10: {x: -1.610, y: 12.602, h: 0.290, aruco_id: 60}
+  L11: {x: -7.715, y: 9.721, h: 0.006, aruco_id: 61}
+  L12: {x: -4.311, y: 4.442, h: -0.111, aruco_id: 62}
+  L13: {x: -5.720, y: 28.118, h: -0.163, aruco_id: 63}
+  L14: {x: -11.438, y: 5.230, h: -0.078, aruco_id: 64}
+  L15: {x: 6.483, y: 1.102, h: 0.239, aruco_id: 65}

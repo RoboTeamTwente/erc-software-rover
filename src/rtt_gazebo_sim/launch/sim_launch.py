@@ -30,11 +30,14 @@ def generate_launch_description():
         DeclareLaunchArgument('world', default_value=os.path.join(pkg, 'worlds', 'mars_yard.sdf')),
         DeclareLaunchArgument('gz_extra_args', default_value='',
                               description="extra gz sim args, e.g. '-s' for headless"),
-        # spawn pose. z is above the ground on purpose, the rover drops onto the terrain.
+        # Spawn pose in ERC yard coordinates (the world frame, see worlds/mars_yard.sdf).
+        # Default: start point S1, facing +Y (towards S2). z is a little above the ground on
+        # purpose, the rover drops onto the terrain.
+        # Keep `initial_state` in config/ekf_sim.yaml equal to this pose.
         DeclareLaunchArgument('x', default_value='0.0'),
         DeclareLaunchArgument('y', default_value='0.0'),
-        DeclareLaunchArgument('z', default_value='0.45'),
-        DeclareLaunchArgument('yaw', default_value='0.0'),
+        DeclareLaunchArgument('z', default_value='0.20'),
+        DeclareLaunchArgument('yaw', default_value='1.5708'),
 
         SetParameter(name='use_sim_time', value=True),
 

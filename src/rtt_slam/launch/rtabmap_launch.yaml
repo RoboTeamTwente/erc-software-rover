@@ -7,6 +7,11 @@ launch:
           description: set to true to launch rtabmap_viz
           default: "false"
 
+      - arg:
+          name: publish_camera_tf
+          description: publish a placeholder base_link -> camera_link transform. Set to false when a URDF already provides it (simulation).
+          default: "true"
+
       # apply this config to all nodes launched from this file
       - set_parameters_from_file:
           filename: "$(find-pkg-share rtt_slam)/config/rtabmap.yaml"
@@ -36,8 +41,7 @@ launch:
       - node:
           pkg: rtabmap_odom
           exec: rgbd_odometry
-          
-        
+
       - node:
           pkg: rtabmap_slam
           exec: rtabmap
@@ -61,3 +65,4 @@ launch:
           exec: static_transform_publisher
           name: static_tf_base_to_camera
           args: "--frame-id base_link --child-frame-id camera_link"
+          if: "$(var publish_camera_tf)"

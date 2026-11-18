@@ -24,6 +24,19 @@ ekf_filter_node:
 
     # Output: /odometry/filtered  (nav_msgs/Odometry)
 
+    # Start pose in ERC yard coordinates: x, y, z, roll, pitch, yaw, then 9 zeros.
+    # Nav2's global costmap is the prior map of the yard (maps/mars_yard_prior.yaml), which is in
+    # ERC coordinates (origin S1, +Y towards S2). The rover's start pose must be given here so
+    # that `odom` and `map` start in that frame. Without it the map starts at the rover's own
+    # start pose and the prior map does not line up.
+    # TODO: set per run from the start point (S1 or S2), its heading, and the height of
+    #       base_link above the ground. Example for S1, facing +Y:
+    # initial_state: [0.0, 0.0, 0.12,
+    #                 0.0, 0.0, 1.5708,
+    #                 0.0, 0.0, 0.0,
+    #                 0.0, 0.0, 0.0,
+    #                 0.0, 0.0, 0.0]
+
     # ---- Source 1: visual odometry from rtabmap (active) ----
     odom0: /rtabmap/odom
     odom0_config: [true,  true,  true,

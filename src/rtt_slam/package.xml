@@ -17,6 +17,10 @@
   <depend>imu_tools</depend>
   <depend>nav2_bringup</depend>
   <depend>nav2_costmap_2d</depend>
+  <depend>nav2_lifecycle_manager</depend>
+  <depend>nav2_map_server</depend>
+  <depend>nav2_regulated_pure_pursuit_controller</depend>
+  <depend>nav2_smac_planner</depend>
   <depend>realsense2_camera</depend>
   <depend>robot_localization</depend>
   <depend>rtabmap_launch</depend>

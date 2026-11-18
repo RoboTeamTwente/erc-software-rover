@@ -33,7 +33,11 @@
     <include>
       <uri>model://mars_yard</uri>
       <name>mars_yard</name>
-      <pose>0 0 0 0 0 0</pose>
+      <!-- Places the model so that the world frame is the ERC yard frame: origin at start point
+           S1, +Y towards S2, heights as in the Mars Yard report. Fitted to the report's 18
+           surveyed ground heights (see rtt_slam/tools/build_prior_map.py). A new yard model
+           needs a new fit. -->
+      <pose>0.312 13.880 0.271 0.02300 -0.01080 -0.01047</pose>
     </include>
   </world>
 </sdf>
