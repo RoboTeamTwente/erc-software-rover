@@ -41,7 +41,7 @@ def generate_launch_description():
 
         SetParameter(name='use_sim_time', value=True),
 
-        # lets Gazebo resolve model://mars_yard
+        # lets Gazebo resolve model://erc2026_terrain, model://erc2026_landmark_NN, model://erc2026_points
         AppendEnvironmentVariable('GZ_SIM_RESOURCE_PATH', os.path.join(pkg, 'models')),
 
         IncludeLaunchDescription(

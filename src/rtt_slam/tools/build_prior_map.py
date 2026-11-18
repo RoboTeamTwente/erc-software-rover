@@ -9,11 +9,12 @@ Offline tool: run on a laptop, not on the rover (needs numpy, scipy, pillow, mat
 Usage:
   python3 build_prior_map.py <terrain.obj> <texture.jpg> <out_dir>
       [--slope-lethal 20] [--slope-free 5] [--rough-lethal 0.12] [--radius 0.36]
-      [--start S1] [--goals W2,W5,W6,W8]
+      [--landmark-radius 0.18] [--start S1] [--goals W2,W5,W6,W8]
 
-The mesh -> ERC transform below was fitted for Model3D_mesh (2026 yard, "xy centered") by matching
-the mesh to the 18 surveyed ground heights (S1-S9, W1-W9) of the 2026 MY Update Report Rev 1.1:
-residual RMS 1.8 cm, worst point 2.7 cm. A new yard model needs a new fit.
+Input: rtt_gazebo_sim/models/erc2026_terrain (the ERC 2026 scan in its own frame, which is already
+the ERC yard frame horizontally: checked against the survey markers at S1-S9, W1, W2 in the ERC
+orthophoto to ~1.5 cm). Only the levelling to the report's heights is applied here (PLANE); it is
+the same levelling as the <pose> in erc2026_terrain/model.sdf (fitted on S1-S9, W1-W9, P1).
 """
 import argparse
 import heapq
@@ -27,8 +28,11 @@ from PIL import Image
 from scipy import ndimage
 
 # ---- ERC frame: p_mesh = R(theta) * p_erc + t ;  z_mesh - H_erc = c0 + c1*X + c2*Y --------------
-THETA_DEG, TX, TY = 0.60, -0.17, -13.89
-PLANE = (0.052, -0.0108, -0.0230)
+# erc2026_terrain is already in ERC X/Y: no rotation, no shift.
+THETA_DEG, TX, TY = 0.0, 0.0, 0.0
+# Levelling, small-angle form of erc2026_terrain/model.sdf <pose>0 0 -0.0524 0.02354 -0.01056 0</pose>:
+# c0 = -z, c1 = pitch, c2 = -roll.
+PLANE = (0.0524, -0.01056, -0.02354)
 
 ERC_POINTS = {  # name: (X, Y, H)  -- 2026 MY Update Report Rev 1.1, "Mars Yard (All Points)"
     'S1': (0.000, 0.000, 0.000), 'S2': (0.000, 26.427, 0.138), 'S3': (10.709, 6.918, 0.067),
@@ -168,6 +172,8 @@ def main():
     ap.add_argument('--slope-lethal', type=float, default=20.0, help='steepest slope the rover may drive [deg]')
     ap.add_argument('--rough-lethal', type=float, default=0.12, help='bump/dip height that blocks the rover [m]')
     ap.add_argument('--radius', type=float, default=0.36, help='rover inscribed radius for the demo route [m]')
+    ap.add_argument('--landmark-radius', type=float, default=0.18,
+                    help='landmark posts (250 mm box) are marked lethal within this radius [m]; 0 = off')
     ap.add_argument('--weight', type=float, default=3.0, help='how strongly the demo route avoids costly cells')
     ap.add_argument('--start', default='S1')
     ap.add_argument('--goals', default='W2,W5,W6,W8')
@@ -179,6 +185,13 @@ def main():
     elev, color, valid, lo = rasterise(E, UV, T, TUV, tex, a.res)
     cost, slope, rough = terrain_cost(elev, valid, a.res, a.slope_free, a.slope_lethal, a.rough_lethal)
     ny, nx = cost.shape
+    # landmark posts are not in the scan (placed after it was taken): mark them as obstacles
+    if a.landmark_radius > 0:
+        gy, gx = np.mgrid[0:ny, 0:nx]
+        cx, cy = lo[0] + (gx + 0.5) * a.res, lo[1] + (gy + 0.5) * a.res
+        for k, (x, y, _) in ERC_POINTS.items():
+            if k[0] == 'L':
+                cost[np.hypot(cx - x, cy - y) <= a.landmark_radius] = 100
     print(f'grid {nx} x {ny} cells at {a.res} m; ERC X [{lo[0]:.1f}, {lo[0] + nx * a.res:.1f}], Y [{lo[1]:.1f}, {lo[1] + ny * a.res:.1f}]')
     inner = ndimage.binary_erosion(valid, iterations=5)
     print(f'inside the yard: {100 * (cost[inner] == 100).mean():.0f}% lethal, {100 * (cost[inner] == 0).mean():.0f}% free, '

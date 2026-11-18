@@ -18,6 +18,27 @@
       subscribe_odom: true    # default anyway, made explicit
       sync_queue_size: 30     # a bit more slack for matching odom to images
 
+      # --- ERC landmarks: ArUco markers as landmarks in the graph (RTAB-Map 0.23, Jazzy) ---
+      # Landmark L<n> carries DICT_5X5 id 50+n (ids 51-65), 150 mm, on all four faces of its box.
+      # Check on first run: rtabmap must NOT log "RTAB-Map is not built with opencv-aruco library!"
+      RGBD/MarkerDetection: "true"
+      Marker/Dictionary: "6"                # DICT_ARUCO_5X5_250
+      Marker/Length: "0.15"
+      Marker/Lengths: "51:65 0.15"          # detect only the 15 ERC landmark ids
+      Marker/MaxRange: "5.0"                # [m] far tags give poor poses (sim camera is only 424x240)
+      # The 4 faces have the same id but face different ways, so the landmark's orientation is
+      # meaningless: optimise its position only. With GTSAM (the Jazzy default optimizer) this
+      # turns each detection into a bearing/range factor.
+      Marker/VarianceOrientationIgnored: "true"
+      Marker/VarianceLinear: "0.02"         # range variance: a face centre is 0.125 m from the pole axis
+      # Known landmark positions in the ERC yard frame (= map frame, see ekf.yaml initial_state).
+      # Format "id x y z roll pitch yaw|..."; z = ERC ground height + 0.417 m (tag centre).
+      # Generated from maps/erc_2026_points.yaml by rtt_gazebo_sim/tools/gen_world.py.
+      # Replace when ERC hands out the final map on the warm-up day.
+      Optimizer/PriorsIgnored: "false"      # default true would ignore the priors below
+      Marker/PriorsVarianceLinear: "0.01"   # ~10 cm: tag height is inferred, faces are off-axis
+      Marker/Priors: "51 3.183 8.012 0.778 0 0 0|52 7.269 9.482 0.698 0 0 0|53 7.878 17.583 0.815 0 0 0|54 9.225 22.389 0.854 0 0 0|55 3.518 23.990 0.689 0 0 0|56 0.882 16.870 0.676 0 0 0|57 -3.944 21.415 0.521 0 0 0|58 -5.491 16.334 0.478 0 0 0|59 -7.695 13.528 0.366 0 0 0|60 -1.610 12.602 0.707 0 0 0|61 -7.715 9.721 0.423 0 0 0|62 -4.311 4.442 0.306 0 0 0|63 -5.720 28.118 0.254 0 0 0|64 -11.438 5.230 0.339 0 0 0|65 6.483 1.102 0.656 0 0 0"
+
   imu_filter_madgwick:
     ros__parameters:
       use_mag: false # we don't have a magnetometer

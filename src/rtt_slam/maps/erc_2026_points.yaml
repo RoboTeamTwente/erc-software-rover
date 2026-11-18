@@ -39,3 +39,6 @@ landmarks:
   L13: {x: -5.720, y: 28.118, h: -0.163, aruco_id: 63}
   L14: {x: -11.438, y: 5.230, h: -0.078, aruco_id: 64}
   L15: {x: 6.483, y: 1.102, h: 0.239, aruco_id: 65}
+
+deep_sampling:
+  P1: {x: -5.997, y: 25.901, h: -0.160}   # deep sampling site (Coordinates_MarsYard2026.txt)

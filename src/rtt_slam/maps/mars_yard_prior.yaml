@@ -3,7 +3,7 @@
 image: mars_yard_prior.pgm
 mode: raw
 resolution: 0.1
-origin: [-18.500, -8.100, 0.0]
+origin: [-18.500, -7.900, 0.0]
 negate: 0
 occupied_thresh: 0.65
 free_thresh: 0.25
