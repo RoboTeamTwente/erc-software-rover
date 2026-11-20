@@ -1,4 +1,4 @@
-FROM docker.io/osrf/ros:humble-desktop-full@sha256:1db1e4e941d4f77fab55bcd479158a75273329335e86ec468bff280859e8178c
+FROM docker.io/osrf/ros:jazzy-desktop-full
 WORKDIR /ws
 
 RUN apt-get update
