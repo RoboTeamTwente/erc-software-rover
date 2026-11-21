@@ -1,4 +1,4 @@
-FROM docker.io/osrf/ros:jazzy-desktop-full
+FROM docker.io/osrf/ros:jazzy-desktop-full@sha256:ae7ad3ac243da1dfd8bd402a2fa08e149ffbf7a385013bd8ef798d0800accdc8
 WORKDIR /ws
 
 RUN apt-get update
