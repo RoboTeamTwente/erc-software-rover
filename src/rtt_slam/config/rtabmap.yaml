@@ -18,6 +18,8 @@
       subscribe_odom: true    # default anyway, made explicit
       sync_queue_size: 30     # a bit more slack for matching odom to images
 
+      #TODO: still needs fine tunning, in experimental mode
+
       # --- ERC landmarks: ArUco markers as landmarks in the graph (RTAB-Map 0.23, Jazzy) ---
       # Landmark L<n> carries DICT_5X5 id 50+n (ids 51-65), 150 mm, on all four faces of its box.
       # Check on first run: rtabmap must NOT log "RTAB-Map is not built with opencv-aruco library!"
@@ -29,6 +31,7 @@
       # The 4 faces have the same id but face different ways, so the landmark's orientation is
       # meaningless: optimise its position only. With GTSAM (the Jazzy default optimizer) this
       # turns each detection into a bearing/range factor.
+      Marker/PriorsVarianceAngular: "9999"
       Marker/VarianceOrientationIgnored: "true"
       Marker/VarianceLinear: "0.02"         # range variance: a face centre is 0.125 m from the pole axis
       # Known landmark positions in the ERC yard frame (= map frame, see ekf.yaml initial_state).

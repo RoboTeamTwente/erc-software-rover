@@ -6,11 +6,11 @@ launch:
     - arg:
         name: prior_map
         description: cost map of the yard in ERC coordinates (built by tools/build_prior_map.py)
-        default: '$(find-pkg-share rtt_slam)/maps/mars_yard_prior.yaml'
+        default: '$(find-pkg-share rtt_navigation)/maps/mars_yard_prior.yaml'
 
     # apply this config to all nodes launched from this file
     - set_parameters_from_file:
-        filename: '$(find-pkg-share rtt_slam)/config/navigation.yaml'
+        filename: '$(find-pkg-share rtt_navigation)/config/navigation.yaml'
 
     # Prior map of the yard -> /prior_map, read by the global costmap.
     # map_server is a lifecycle node, so it needs a lifecycle manager to activate it.
@@ -33,7 +33,7 @@ launch:
         arg:
           # referencing the same config again, because the launch file requires it
           - name: params_file
-            value: '$(find-pkg-share rtt_slam)/config/navigation.yaml'
+            value: '$(find-pkg-share rtt_navigation)/config/navigation.yaml'
 
     # VoxelGrid to Markers
     - node:

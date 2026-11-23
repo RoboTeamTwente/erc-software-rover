@@ -34,7 +34,7 @@ launch:
 
   # Nav2
   - include:
-      file: '$(find-pkg-share rtt_slam)/launch/navigation_launch.yaml'
+      file: '$(find-pkg-share rtt_navigation)/launch/navigation_launch.yaml'
       arg:
         - name: use_sim_time
           value: "true"
