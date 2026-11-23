@@ -1,0 +1,12 @@
+# vi:sw=2:ts=2:et:
+# the bringup launch file which launches all the files in the stack
+launch:
+
+  # SLAM
+  - include:
+     file:  '$(find-pkg-share rtt_slam)/launch/slam_launch.yaml'
+  
+  # Nav2
+  - include:
+      file:  '$(find-pkg-share rtt_navigation)/launch/navigation_launch.yaml'
+  

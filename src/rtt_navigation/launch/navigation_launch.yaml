@@ -1,0 +1,48 @@
+# vi:sw=2:ts=2:et:
+
+launch:
+  - group:
+
+    - arg:
+        name: prior_map
+        description: cost map of the yard in ERC coordinates (built by tools/build_prior_map.py)
+        default: '$(find-pkg-share rtt_navigation)/maps/mars_yard_prior.yaml'
+
+    # apply this config to all nodes launched from this file
+    - set_parameters_from_file:
+        filename: '$(find-pkg-share rtt_navigation)/config/navigation.yaml'
+
+    # Prior map of the yard -> /prior_map, read by the global costmap.
+    # map_server is a lifecycle node, so it needs a lifecycle manager to activate it.
+    - node:
+        pkg: nav2_map_server
+        exec: map_server
+        name: map_server
+        param:
+          - name: yaml_filename
+            value: '$(var prior_map)'
+
+    - node:
+        pkg: nav2_lifecycle_manager
+        exec: lifecycle_manager
+        name: lifecycle_manager_prior_map
+
+    # Nav2
+    - include:
+        file: "$(find-pkg-share nav2_bringup)/launch/navigation_launch.py"
+        arg:
+          # referencing the same config again, because the launch file requires it
+          - name: params_file
+            value: '$(find-pkg-share rtt_navigation)/config/navigation.yaml'
+
+    # VoxelGrid to Markers
+    - node:
+        pkg: nav2_costmap_2d
+        exec: nav2_costmap_2d_markers
+        namespace: local_costmap
+
+    # VoxelGrid to Markers
+    - node:
+        pkg: nav2_costmap_2d
+        exec: nav2_costmap_2d_markers
+        namespace: global_costmap

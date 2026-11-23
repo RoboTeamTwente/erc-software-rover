@@ -10,6 +10,6 @@ launch:
   - include:
       file: '$(find-pkg-share rtt_slam)/launch/rtabmap_launch.yaml'
 
-  # Nav2
+  # EKF
   - include:
-      file: '$(find-pkg-share rtt_slam)/launch/navigation_launch.yaml'
+      file: '$(find-pkg-share rtt_slam)/launch/ekf_launch.yaml'  

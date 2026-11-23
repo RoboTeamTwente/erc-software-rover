@@ -1,0 +1,9 @@
+# Traversability prior of the ERC Mars Yard, in ERC coordinates (origin S1, +Y towards S2).
+# Built by build_prior_map.py: slope free <5.0 deg, lethal >=20.0 deg, roughness lethal >=0.12 m.
+image: mars_yard_prior.pgm
+mode: raw
+resolution: 0.1
+origin: [-18.500, -7.900, 0.0]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.25

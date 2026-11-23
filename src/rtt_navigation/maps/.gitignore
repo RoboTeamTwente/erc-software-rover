@@ -1,0 +1,2 @@
+# regenerate with tools/build_prior_map.py
+*.npy

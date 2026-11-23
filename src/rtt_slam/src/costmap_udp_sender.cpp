@@ -117,7 +117,7 @@ private:
         RCLCPP_DEBUG(
             this->get_logger(),
             "seq=%u chunks=%zu bytes=%zu",
-            seq, total_chunks, raw_size
+            seq, total_chunks, raw_size 
         );
     }
 
