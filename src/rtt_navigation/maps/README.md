@@ -14,10 +14,10 @@ Everything here is in **ERC yard coordinates**: origin at start point S1, +Y tow
 Run on a laptop (needs `numpy`, `scipy`, `pillow`, `matplotlib`), from the repository root:
 
 ```bash
-python3 src/rtt_slam/tools/build_prior_map.py \
+python3 src/rtt_navigation/tools/build_prior_map.py \
     src/rtt_gazebo_sim/models/erc2026_terrain/meshes/erc2026_visual.obj \
     src/rtt_gazebo_sim/models/erc2026_terrain/meshes/textures/erc2026_orthophoto.jpg \
-    src/rtt_slam/maps \
+    src/rtt_navigation/maps \
     --slope-lethal 20 --slope-free 5 --rough-lethal 0.12
 ```
 

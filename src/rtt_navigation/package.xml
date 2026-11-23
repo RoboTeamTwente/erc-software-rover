@@ -18,6 +18,9 @@
   <depend>nav2_regulated_pure_pursuit_controller</depend>
   <depend>nav2_smac_planner</depend>
   
+  # not used but was used before in rtt_slam old team version
+  <depend>spatio_temporal_voxel_layer</depend>
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>

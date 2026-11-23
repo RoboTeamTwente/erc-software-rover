@@ -9,11 +9,11 @@
 
 and print the RTAB-Map Marker/Priors line for rtt_slam/config/rtabmap.yaml.
 
-Points come from rtt_slam/maps/erc_2026_points.yaml (the repo's single source).
+Points come from rtt_navigation/maps/erc_2026_points.yaml (the repo's single source).
 Run build_meshes.py first (terrain heights are read from erc2026_visual.obj).
 
 usage (from the repo root):
-  python3 src/rtt_gazebo_sim/tools/gen_world.py src/rtt_slam/maps/erc_2026_points.yaml src/rtt_gazebo_sim
+  python3 src/rtt_gazebo_sim/tools/gen_world.py src/rtt_navigation/maps/erc_2026_points.yaml src/rtt_gazebo_sim
 Needs numpy, scipy, pyyaml, Pillow, OpenCV (cv2 with aruco; Ubuntu's python3-opencv works).
 """
 import os
@@ -50,7 +50,7 @@ PX_PER_M = 2000               # face texture resolution (2 px/mm)
 
 
 def read_points(path):
-    """(name, x, y, h) from rtt_slam/maps/erc_2026_points.yaml, any group (S, W, L, P)."""
+    """(name, x, y, h) from rtt_navigation/maps/erc_2026_points.yaml, any group (S, W, L, P)."""
     import yaml
     data = yaml.safe_load(open(path))
     pts = []
@@ -228,7 +228,7 @@ def terrain_sdf():
      The link pose only LEVELS the mesh to the heights in ERC's coordinate file
      ('H (local)'): the mesh is tilted ~1.35 deg about X and ~-0.60 deg about Y
      relative to them. Fitted on the 19 ground points (S, W, P): 3 cm RMS.
-     The same levelling is used by rtt_slam/tools/build_prior_map.py (PLANE); change both together. -->
+     The same levelling is used by rtt_navigation/tools/build_prior_map.py (PLANE); change both together. -->
 <sdf version="1.9">
   <model name="erc2026_terrain">
     <static>true</static>

@@ -29,7 +29,7 @@ Drive by hand:
   point poles. Cameras see the poles, so use the default world for SLAM:
   `ros2 launch rtt_gazebo_sim sim_launch.py world:=$(ros2 pkg prefix rtt_gazebo_sim)/share/rtt_gazebo_sim/worlds/mars_yard_markers.sdf`
 - tools/: build_meshes.py (ERC scan + orthophoto -> meshes) and gen_world.py (landmarks, point
-  poles, worlds and the RTAB-Map Marker/Priors line, from rtt_slam/maps/erc_2026_points.yaml).
+  poles, worlds and the RTAB-Map Marker/Priors line, from rtt_navigation/maps/erc_2026_points.yaml).
   See "Regenerating the yard".
 - urdf/rtt_rover.urdf.xacro: placeholder rover. Root is base_link (no base_footprint), 4 wheel
   skid steer, RealSense style camera frames, IMU. All sizes are guesses.
@@ -73,8 +73,8 @@ The raw ERC files (Model3D_mesh2.obj, orthophoto.tif) are not in the repo. From 
 
     python3 src/rtt_gazebo_sim/tools/build_meshes.py Model3D_mesh2.obj orthophoto.tif \
         src/rtt_gazebo_sim/models/erc2026_terrain --visual-cell 0.10 --collision-cell 0.20
-    python3 src/rtt_gazebo_sim/tools/gen_world.py src/rtt_slam/maps/erc_2026_points.yaml src/rtt_gazebo_sim
+    python3 src/rtt_gazebo_sim/tools/gen_world.py src/rtt_navigation/maps/erc_2026_points.yaml src/rtt_gazebo_sim
 
 gen_world.py prints the Marker/Priors line: paste it into rtt_slam/config/rtabmap.yaml.
-Then rebuild the prior cost map (rtt_slam/maps/README.md).
-If the levelling changes (LEVEL in gen_world.py), change PLANE in rtt_slam/tools/build_prior_map.py too.
+Then rebuild the prior cost map (rtt_navigation/maps/README.md).
+If the levelling changes (LEVEL in gen_world.py), change PLANE in rtt_navigation/tools/build_prior_map.py too.
