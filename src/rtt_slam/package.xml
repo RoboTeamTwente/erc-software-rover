@@ -19,7 +19,7 @@
   <depend>rtabmap_launch</depend>
   <depend>tf2_ros</depend>
 
-  # not used but part of the old team version dependencies
+  <!-- not used, kept from the old team's version -->
   <depend>depthimage_to_laserscan</depend>
   <depend>slam_toolbox</depend>
   
